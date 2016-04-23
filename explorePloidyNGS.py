@@ -1,4 +1,4 @@
-#!/progs/users/python-2.7.8/bin//python
+#!/bioinf/progs/python-2.7.8/bin/python
 
 import argparse
 import pysam
@@ -11,7 +11,8 @@ import os.path
 
 ###################################
 # Dependences:
-# - samtools1.2
+# - samtools >= 1.2
+# - python >=2.7.8
 ###################################
 
 ###################################
@@ -19,6 +20,7 @@ import os.path
 ###################################
 
 chroms_dict = defaultdict(list)
+pathSamtoolsBin="/bioinf/progs/samtools-1.3/bin/samtools"
 
 ###################################
 # Command line arguments
@@ -49,13 +51,16 @@ if os.path.isfile(bamindexname):
 	print("BAM index present... OK!")
 else:
 	print("No index available for pileup. Creating an index...")
-	os.system("samtools1.2 index %s" % args.bam)
-	print("... index created!")
+	cmdSamtololsIndex=pathSamtoolsBin + " index " + args.bam
+	samtololsIndexReturn=os.system(cmdSamtololsIndex)
+	if (samtololsIndexReturn!=0):
+		raise Exception("Problem indexing your bam file")
+	else:
+		print(". . . index succesfully created!")
 
-# Get number of reads mapped
+# Get number of reads mapped, using idxstats, instead of samtools view, should be much faster, the ony draw back is that it only give the number of maped reads, independant of whether they were paired or not during mapping
 print("Getting the number of mapped reads from BAM")
-libSize = os.popen("samtools1.2 view -F 0x4 %s | cut -f 1 | sort -u | wc -l" % args.bam).read().rstrip()
-libSize = int(libSize)
+libSize= reduce(lambda x, y: x + y, [ int(l.rstrip('\n').split('\t')[2]) for l in pysam.idxstats(args.bam) ])
 
 # Create a pysam object for the indexed BAM
 bamfile = pysam.AlignmentFile(bamOBJ, "rb")
@@ -150,3 +155,22 @@ for contig, dict2 in countAlleleNormalized.iteritems():
 
 outOBJ.close()
 bamOBJ.close()
+
+def createRscript(table):
+	rfile=table + ".Rscript"
+	pdfFilename=table + ".ExplorePloidy.pdf"
+	title="Explore ploidy - NGS"
+	rscriptOBJ = open(rfile,"w")
+        rscriptOBJ.write("datain<-read.table(\"table\",header=F)")
+	rscriptOBJ.write("colnames(datain)<-c('Chrom','Pos','Type','Freq')")
+	rscriptOBJ.write("head(datain)")
+	rscriptOBJ.write("dim(datain)")
+	rscriptOBJ.write("pdf(\"pdfFilename\")")
+	rscriptOBJ.write("ggplot(datain,aes(x=Freq, fill=Type)) +")
+	rscriptOBJ.write(" geom_histogram(binwidth = 0.5, alpha=0.4) +")
+	rscriptOBJ.write(" ggtitle(\"title\") +")
+	rscriptOBJ.write(" ylab(\"Counts positions\") +")
+	rscriptOBJ.write(" xlab(\"Allele Freq\") +")
+	rscriptOBJ.write(" scale_x_continuous(limits=c(1,100))")
+	rscriptOBJ.write("dev.off()")
+	return;
