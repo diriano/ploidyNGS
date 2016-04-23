@@ -181,3 +181,5 @@ def createRscript(table):
 	rscriptOBJ.write(" scale_x_continuous(limits=c(1,100))")
 	rscriptOBJ.write("dev.off()")
 	return;
+
+createRscript(args.out)
