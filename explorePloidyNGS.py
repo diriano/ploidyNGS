@@ -1,4 +1,4 @@
-#!/bioinf/progs/python-2.7.8/bin/python
+#!/bioinf/progs/anaconda/bin/python
 
 import argparse
 import pysam
@@ -13,6 +13,7 @@ import os.path
 # Dependences:
 # - samtools >= 1.2
 # - python >=2.7.8
+# - pysam >0.9
 ###################################
 
 ###################################
@@ -60,7 +61,13 @@ else:
 
 # Get number of reads mapped, using idxstats, instead of samtools view, should be much faster, the ony draw back is that it only give the number of maped reads, independant of whether they were paired or not during mapping
 print("Getting the number of mapped reads from BAM")
-libSize= reduce(lambda x, y: x + y, [ int(l.rstrip('\n').split('\t')[2]) for l in pysam.idxstats(args.bam) ])
+libSize=0
+for l in pysam.idxstats(args.bam).split('\n'):
+	if(len(l.split('\t'))==4):
+		libSize= libSize+int(l.split('\t')[2])  
+
+print libSize
+#libSize= reduce(lambda x, y: x + y, [ int(l.split('\t')[2]) for l in pysam.idxstats(args.bam).split('\n') ])
 
 # Create a pysam object for the indexed BAM
 bamfile = pysam.AlignmentFile(bamOBJ, "rb")
