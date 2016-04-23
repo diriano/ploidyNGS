@@ -11,7 +11,6 @@ import os.path
 
 ###################################
 # Dependences:
-# - samtools >= 1.2
 # - python >=2.7.8
 # - pysam >0.9
 ###################################
@@ -52,12 +51,13 @@ if os.path.isfile(bamindexname):
 	print("BAM index present... OK!")
 else:
 	print("No index available for pileup. Creating an index...")
-	cmdSamtololsIndex=pathSamtoolsBin + " index " + args.bam
-	samtololsIndexReturn=os.system(cmdSamtololsIndex)
-	if (samtololsIndexReturn!=0):
-		raise Exception("Problem indexing your bam file")
-	else:
-		print(". . . index succesfully created!")
+	pysam.index(args.bam)
+#	cmdSamtololsIndex=pathSamtoolsBin + " index " + args.bam
+#	samtololsIndexReturn=os.system(cmdSamtololsIndex)
+#	if (samtololsIndexReturn!=0):
+#		raise Exception("Problem indexing your bam file")
+#	else:
+#		print(". . . index succesfully created!")
 
 # Get number of reads mapped, using idxstats, instead of samtools view, should be much faster, the ony draw back is that it only give the number of maped reads, independant of whether they were paired or not during mapping
 print("Getting the number of mapped reads from BAM")
