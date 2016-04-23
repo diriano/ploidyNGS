@@ -12,7 +12,7 @@ import os.path
 ###################################
 # Dependences:
 # - python >=2.7.8
-# - pysam >0.9
+# - pysam  >=0.9
 ###################################
 
 ###################################
@@ -20,7 +20,6 @@ import os.path
 ###################################
 
 chroms_dict = defaultdict(list)
-pathSamtoolsBin="/bioinf/progs/samtools-1.3/bin/samtools"
 
 ###################################
 # Command line arguments
@@ -51,13 +50,7 @@ if os.path.isfile(bamindexname):
 	print("BAM index present... OK!")
 else:
 	print("No index available for pileup. Creating an index...")
-	pysam.index(args.bam)
-#	cmdSamtololsIndex=pathSamtoolsBin + " index " + args.bam
-#	samtololsIndexReturn=os.system(cmdSamtololsIndex)
-#	if (samtololsIndexReturn!=0):
-#		raise Exception("Problem indexing your bam file")
-#	else:
-#		print(". . . index succesfully created!")
+	pysam.index(args.bam)#TODO: check that indexing worked OK
 
 # Get number of reads mapped, using idxstats, instead of samtools view, should be much faster, the ony draw back is that it only give the number of maped reads, independant of whether they were paired or not during mapping
 print("Getting the number of mapped reads from BAM")
@@ -67,7 +60,6 @@ for l in pysam.idxstats(args.bam).split('\n'):
 		libSize= libSize+int(l.split('\t')[2])  
 
 print libSize
-#libSize= reduce(lambda x, y: x + y, [ int(l.split('\t')[2]) for l in pysam.idxstats(args.bam).split('\n') ])
 
 # Create a pysam object for the indexed BAM
 bamfile = pysam.AlignmentFile(bamOBJ, "rb")
@@ -184,3 +176,7 @@ def createRscript(table):
 	return;
 
 createRscript(args.out)
+cmdRscript="Rscript "+ args.out + ".Rscript"
+os.system(cmdRscript)
+#TODO Remove temporary files, e.g., *.tbl,*.Rscript
+os.remove(args.out)
