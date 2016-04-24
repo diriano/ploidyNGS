@@ -1,4 +1,4 @@
-#!/progs/users/python-2.7.8/bin//python
+#!/bioinf/progs/anaconda/bin/python
 
 import argparse
 import pysam
@@ -11,7 +11,8 @@ import os.path
 
 ###################################
 # Dependences:
-# - samtools1.2
+# - python >=2.7.8
+# - pysam  >=0.9
 ###################################
 
 ###################################
@@ -49,13 +50,16 @@ if os.path.isfile(bamindexname):
 	print("BAM index present... OK!")
 else:
 	print("No index available for pileup. Creating an index...")
-	os.system("samtools1.2 index %s" % args.bam)
-	print("... index created!")
+	pysam.index(args.bam)#TODO: check that indexing worked OK
 
-# Get number of reads mapped
+# Get number of reads mapped, using idxstats, instead of samtools view, should be much faster, the ony draw back is that it only give the number of maped reads, independant of whether they were paired or not during mapping
 print("Getting the number of mapped reads from BAM")
-libSize = os.popen("samtools1.2 view -F 0x4 %s | cut -f 1 | sort -u | wc -l" % args.bam).read().rstrip()
-libSize = int(libSize)
+libSize=0
+for l in pysam.idxstats(args.bam).split('\n'):
+	if(len(l.split('\t'))==4):
+		libSize= libSize+int(l.split('\t')[2])  
+
+print libSize
 
 # Create a pysam object for the indexed BAM
 bamfile = pysam.AlignmentFile(bamOBJ, "rb")
@@ -146,3 +150,29 @@ for contig, dict2 in count.iteritems():
 
 outOBJ.close()
 bamOBJ.close()
+
+def createRscript(table):
+	rfile=table + ".Rscript"
+	pdfFilename=table + ".ExplorePloidy.pdf"
+	title="Explore ploidy - NGS"
+	rscriptOBJ = open(rfile,"w")
+        rscriptOBJ.write("library(ggplot2)\n")
+        rscriptOBJ.write("datain<-read.table(\"" + table + "\",header=F)\n")
+	rscriptOBJ.write("colnames(datain)<-c('Chrom','Pos','Type','Freq')\n")
+	#rscriptOBJ.write("head(datain)\n")
+	#rscriptOBJ.write("dim(datain)\n")
+	rscriptOBJ.write("pdf(\""+pdfFilename+"\")\n")
+	rscriptOBJ.write("ggplot(datain,aes(x=Freq, fill=Type)) +\n")
+	rscriptOBJ.write(" geom_histogram(binwidth = 0.5, alpha=0.4) +\n")
+	rscriptOBJ.write(" ggtitle(\"title\") +\n")
+	rscriptOBJ.write(" ylab(\"Counts positions\") +\n")
+	rscriptOBJ.write(" xlab(\"Allele Freq\") +\n")
+	rscriptOBJ.write(" scale_x_continuous(limits=c(1,100))\n")
+	rscriptOBJ.write("dev.off()\n")
+	return;
+
+createRscript(args.out)
+cmdRscript="Rscript "+ args.out + ".Rscript"
+os.system(cmdRscript)
+#TODO Remove temporary files, e.g., *.tbl,*.Rscript
+os.remove(args.out)
