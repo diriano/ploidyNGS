@@ -109,44 +109,40 @@ for contig, dict2 in count.iteritems():
 					normalized = (float(obsCount) / float(libSize)) * 1000000
 					percBase = (normalized / pos_depth_cmp) * 100
 					countAlleleNormalized[contig][pos][obsBase]=percBase
-					#print pos, maxAlleleFreq, pos_depth, pos_depth_cmp, obsBase, obsCount, percBase, libSize
-
-for contig, dict2 in countAlleleNormalized.iteritems():
-        for pos, dict3 in dict2.iteritems():
-		alleleFreqDist = []
-		if(countAlleleNormalized[contig][pos]['A']):
-			#outOBJ.write("%s\t" % (countAlleleNormalized[contig][pos]['A']))
-			alleleFreqDist = alleleFreqDist + [countAlleleNormalized[contig][pos]['A']]
-		else:
-			#outOBJ.write("0\t")
-			alleleFreqDist = alleleFreqDist + [0]
-		if(countAlleleNormalized[contig][pos]['T']):
-			#outOBJ.write("%s\t" % (countAlleleNormalized[contig][pos]['T']))
-			alleleFreqDist = alleleFreqDist + [countAlleleNormalized[contig][pos]['T']]
-		else:
-			#outOBJ.write("0\t")
-			alleleFreqDist = alleleFreqDist + [0]
-		if(countAlleleNormalized[contig][pos]['C']):
-			#outOBJ.write("%s\t" % (countAlleleNormalized[contig][pos]['C']))
-			alleleFreqDist = alleleFreqDist + [countAlleleNormalized[contig][pos]['C']]
-		else:
-			#outOBJ.write("0\t")
-			alleleFreqDist = alleleFreqDist + [0]
-		if(countAlleleNormalized[contig][pos]['G']):
-			#outOBJ.write("%s\t" % (countAlleleNormalized[contig][pos]['G']))
-			alleleFreqDist = alleleFreqDist + [countAlleleNormalized[contig][pos]['G']]
-		else:
-			#outOBJ.write("0\t")
-			alleleFreqDist = alleleFreqDist + [0]
-		alleleFreqDist.sort()
-		outOBJ.write("%s\t%s\tFourthFreq\t%.2f" % (contig, pos, alleleFreqDist[0]))
-		outOBJ.write("\n")
-		outOBJ.write("%s\t%s\tThirdFreq\t%.2f" % (contig, pos, alleleFreqDist[1]))
-		outOBJ.write("\n")
-		outOBJ.write("%s\t%s\tSecondFreq\t%.2f" % (contig, pos, alleleFreqDist[2]))
-		outOBJ.write("\n")
-		outOBJ.write("%s\t%s\tFirstFreq\t%.2f" % (contig, pos, alleleFreqDist[3]))
-		outOBJ.write("\n")
+				alleleFreqDist = []
+				if(countAlleleNormalized[contig][pos]['A']):
+					#outOBJ.write("%s\t" % (countAlleleNormalized[contig][pos]['A']))
+					alleleFreqDist = alleleFreqDist + [countAlleleNormalized[contig][pos]['A']]
+				else:
+					#outOBJ.write("0\t")
+					alleleFreqDist = alleleFreqDist + [0]
+				if(countAlleleNormalized[contig][pos]['T']):
+					#outOBJ.write("%s\t" % (countAlleleNormalized[contig][pos]['T']))
+					alleleFreqDist = alleleFreqDist + [countAlleleNormalized[contig][pos]['T']]
+				else:
+					#outOBJ.write("0\t")
+					alleleFreqDist = alleleFreqDist + [0]
+				if(countAlleleNormalized[contig][pos]['C']):
+					#outOBJ.write("%s\t" % (countAlleleNormalized[contig][pos]['C']))
+					alleleFreqDist = alleleFreqDist + [countAlleleNormalized[contig][pos]['C']]
+				else:
+					#outOBJ.write("0\t")
+					alleleFreqDist = alleleFreqDist + [0]
+				if(countAlleleNormalized[contig][pos]['G']):
+					#outOBJ.write("%s\t" % (countAlleleNormalized[contig][pos]['G']))
+					alleleFreqDist = alleleFreqDist + [countAlleleNormalized[contig][pos]['G']]
+				else:
+					#outOBJ.write("0\t")
+					alleleFreqDist = alleleFreqDist + [0]
+				alleleFreqDist.sort()
+				outOBJ.write("%s\t%s\tFourthFreq\t%.2f" % (contig, pos, alleleFreqDist[0]))
+				outOBJ.write("\n")
+				outOBJ.write("%s\t%s\tThirdFreq\t%.2f" % (contig, pos, alleleFreqDist[1]))
+				outOBJ.write("\n")
+				outOBJ.write("%s\t%s\tSecondFreq\t%.2f" % (contig, pos, alleleFreqDist[2]))
+				outOBJ.write("\n")
+				outOBJ.write("%s\t%s\tFirstFreq\t%.2f" % (contig, pos, alleleFreqDist[3]))
+				outOBJ.write("\n")
 
 outOBJ.close()
 bamOBJ.close()
