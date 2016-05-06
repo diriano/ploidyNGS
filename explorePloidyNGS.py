@@ -1,4 +1,4 @@
-#!/progs/users/python-2.7.8/bin//python
+#!/bioinf/progs/anaconda/bin/python
 
 import argparse
 import pysam
@@ -11,7 +11,8 @@ import os.path
 
 ###################################
 # Dependences:
-# - samtools1.2
+# - python >=2.7.8
+# - pysam  >=0.9
 ###################################
 
 ###################################
@@ -49,13 +50,16 @@ if os.path.isfile(bamindexname):
 	print("BAM index present... OK!")
 else:
 	print("No index available for pileup. Creating an index...")
-	os.system("samtools1.2 index %s" % args.bam)
-	print("... index created!")
+	pysam.index(args.bam)#TODO: check that indexing worked OK
 
-# Get number of reads mapped
+# Get number of reads mapped, using idxstats, instead of samtools view, should be much faster, the ony draw back is that it only give the number of maped reads, independant of whether they were paired or not during mapping
 print("Getting the number of mapped reads from BAM")
-libSize = os.popen("samtools1.2 view -F 0x4 %s | cut -f 1 | sort -u | wc -l" % args.bam).read().rstrip()
-libSize = int(libSize)
+libSize=0
+for l in pysam.idxstats(args.bam).split('\n'):
+	if(len(l.split('\t'))==4):
+		libSize= libSize+int(l.split('\t')[2])  
+
+print libSize
 
 # Create a pysam object for the indexed BAM
 bamfile = pysam.AlignmentFile(bamOBJ, "rb")
@@ -109,44 +113,66 @@ for contig, dict2 in count.iteritems():
 					normalized = (float(obsCount) / float(libSize)) * 1000000
 					percBase = (normalized / pos_depth_cmp) * 100
 					countAlleleNormalized[contig][pos][obsBase]=percBase
-					#print pos, maxAlleleFreq, pos_depth, pos_depth_cmp, obsBase, obsCount, percBase, libSize
-
-for contig, dict2 in countAlleleNormalized.iteritems():
-        for pos, dict3 in dict2.iteritems():
-		alleleFreqDist = []
-		if(countAlleleNormalized[contig][pos]['A']):
-			#outOBJ.write("%s\t" % (countAlleleNormalized[contig][pos]['A']))
-			alleleFreqDist = alleleFreqDist + [countAlleleNormalized[contig][pos]['A']]
-		else:
-			#outOBJ.write("0\t")
-			alleleFreqDist = alleleFreqDist + [0]
-		if(countAlleleNormalized[contig][pos]['T']):
-			#outOBJ.write("%s\t" % (countAlleleNormalized[contig][pos]['T']))
-			alleleFreqDist = alleleFreqDist + [countAlleleNormalized[contig][pos]['T']]
-		else:
-			#outOBJ.write("0\t")
-			alleleFreqDist = alleleFreqDist + [0]
-		if(countAlleleNormalized[contig][pos]['C']):
-			#outOBJ.write("%s\t" % (countAlleleNormalized[contig][pos]['C']))
-			alleleFreqDist = alleleFreqDist + [countAlleleNormalized[contig][pos]['C']]
-		else:
-			#outOBJ.write("0\t")
-			alleleFreqDist = alleleFreqDist + [0]
-		if(countAlleleNormalized[contig][pos]['G']):
-			#outOBJ.write("%s\t" % (countAlleleNormalized[contig][pos]['G']))
-			alleleFreqDist = alleleFreqDist + [countAlleleNormalized[contig][pos]['G']]
-		else:
-			#outOBJ.write("0\t")
-			alleleFreqDist = alleleFreqDist + [0]
-		alleleFreqDist.sort()
-		outOBJ.write("%s\t%s\tFourthFreq\t%.2f" % (contig, pos, alleleFreqDist[0]))
-		outOBJ.write("\n")
-		outOBJ.write("%s\t%s\tThirdFreq\t%.2f" % (contig, pos, alleleFreqDist[1]))
-		outOBJ.write("\n")
-		outOBJ.write("%s\t%s\tSecondFreq\t%.2f" % (contig, pos, alleleFreqDist[2]))
-		outOBJ.write("\n")
-		outOBJ.write("%s\t%s\tFirstFreq\t%.2f" % (contig, pos, alleleFreqDist[3]))
-		outOBJ.write("\n")
+				alleleFreqDist = []
+				if(countAlleleNormalized[contig][pos]['A']):
+					#outOBJ.write("%s\t" % (countAlleleNormalized[contig][pos]['A']))
+					alleleFreqDist = alleleFreqDist + [countAlleleNormalized[contig][pos]['A']]
+				else:
+					#outOBJ.write("0\t")
+					alleleFreqDist = alleleFreqDist + [0]
+				if(countAlleleNormalized[contig][pos]['T']):
+					#outOBJ.write("%s\t" % (countAlleleNormalized[contig][pos]['T']))
+					alleleFreqDist = alleleFreqDist + [countAlleleNormalized[contig][pos]['T']]
+				else:
+					#outOBJ.write("0\t")
+					alleleFreqDist = alleleFreqDist + [0]
+				if(countAlleleNormalized[contig][pos]['C']):
+					#outOBJ.write("%s\t" % (countAlleleNormalized[contig][pos]['C']))
+					alleleFreqDist = alleleFreqDist + [countAlleleNormalized[contig][pos]['C']]
+				else:
+					#outOBJ.write("0\t")
+					alleleFreqDist = alleleFreqDist + [0]
+				if(countAlleleNormalized[contig][pos]['G']):
+					#outOBJ.write("%s\t" % (countAlleleNormalized[contig][pos]['G']))
+					alleleFreqDist = alleleFreqDist + [countAlleleNormalized[contig][pos]['G']]
+				else:
+					#outOBJ.write("0\t")
+					alleleFreqDist = alleleFreqDist + [0]
+				alleleFreqDist.sort()
+				outOBJ.write("%s\t%s\tFourthFreq\t%.2f" % (contig, pos, alleleFreqDist[0]))
+				outOBJ.write("\n")
+				outOBJ.write("%s\t%s\tThirdFreq\t%.2f" % (contig, pos, alleleFreqDist[1]))
+				outOBJ.write("\n")
+				outOBJ.write("%s\t%s\tSecondFreq\t%.2f" % (contig, pos, alleleFreqDist[2]))
+				outOBJ.write("\n")
+				outOBJ.write("%s\t%s\tFirstFreq\t%.2f" % (contig, pos, alleleFreqDist[3]))
+				outOBJ.write("\n")
 
 outOBJ.close()
 bamOBJ.close()
+
+def createRscript(table):
+	rfile=table + ".Rscript"
+	pdfFilename=table + ".ExplorePloidy.pdf"
+	title="Explore ploidy - NGS"
+	rscriptOBJ = open(rfile,"w")
+        rscriptOBJ.write("library(ggplot2)\n")
+        rscriptOBJ.write("datain<-read.table(\"" + table + "\",header=F)\n")
+	rscriptOBJ.write("colnames(datain)<-c('Chrom','Pos','Type','Freq')\n")
+	#rscriptOBJ.write("head(datain)\n")
+	#rscriptOBJ.write("dim(datain)\n")
+	rscriptOBJ.write("pdf(\""+pdfFilename+"\")\n")
+	rscriptOBJ.write("ggplot(datain,aes(x=Freq, fill=Type)) +\n")
+	rscriptOBJ.write(" geom_histogram(binwidth = 0.5, alpha=0.4) +\n")
+	rscriptOBJ.write(" ggtitle(\"title\") +\n")
+	rscriptOBJ.write(" ylab(\"Counts positions\") +\n")
+	rscriptOBJ.write(" xlab(\"Allele Freq\") +\n")
+	rscriptOBJ.write(" scale_x_continuous(limits=c(1,100))\n")
+	rscriptOBJ.write("dev.off()\n")
+	return;
+
+createRscript(args.out)
+cmdRscript="Rscript "+ args.out + ".Rscript"
+os.system(cmdRscript)
+#TODO Remove temporary files, e.g., *.tbl,*.Rscript
+os.remove(args.out)

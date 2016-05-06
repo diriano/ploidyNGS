@@ -32,7 +32,7 @@ args = parser.parse_args()
 """
 # Checks if user requested the license to be displayed
 if lic:
-	print("Copyright (C) 2016 Diego Mauricio Riano Pachon\ne-mail: diriano\@gmail.com Copyright (c) 216\nThis program is free software; you can redistribute it and/or\nmodify it under the terms of the GNU General Public License\nas published by the Free Software Foundation; either version 2\nof the License, or (at your option) any later version.")
+	print("Copyright (C) 2016 Diego Mauricio Riano Pachon\ne-mail: diriano\@gmail.com Copyright (c) 2016\nThis program is free software; you can redistribute it and/or\nmodify it under the terms of the GNU General Public License\nas published by the Free Software Foundation; either version 2\nof the License, or (at your option) any later version.")
 	print("This program is distributed in the hope that it will be useful,\nbut WITHOUT ANY WARRANTY; without even the implied warranty of\nMERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\nGNU General Public License for more details.")
 	print("You should have received a copy of the GNU General Public License\nalong with this program; if not, write to the Free Software\nFoundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.")
 	exit()
