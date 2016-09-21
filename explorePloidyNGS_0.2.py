@@ -71,82 +71,59 @@ def makehash():
 count = makehash()
 countAlleleNormalized = makehash()
 
-# Count each allele at each position in chromosome
 for contig, contigSize in chromsSize.iteritems():
-		for pucolumn in bamfile.pileup(contig, 0):
-			pos_1 = pucolumn.pos
-			for puread in pucolumn.pileups:
-				if not puread.is_del and not puread.is_refskip:
-					base = puread.alignment.query_sequence[puread.query_position]
-					if count[contig][pos_1][base]:
-						count[contig][pos_1][base]=count[contig][pos_1][base]+1
-					else:
-						count[contig][pos_1][base]=1
-
-for contig, dict2 in count.iteritems():
-	for pos, dict3 in dict2.iteritems():
-		pos_depth = 0
-		pos_bases = {}
-		if count[contig][pos]['A']:
-			pos_depth = pos_depth + int(count[contig][pos]['A'])
-			pos_bases['A']=int(count[contig][pos]['A'])
-			#print("A: %s" % (count[contig][pos]['A']))
-		if count[contig][pos]['C']:
-			pos_depth = pos_depth + int(count[contig][pos]['C'])
-			pos_bases['C']=int(count[contig][pos]['C'])
-			#print("C: %s" % (count[contig][pos]['C']))
-		if count[contig][pos]['T']:
-			pos_depth = pos_depth + int(count[contig][pos]['T'])
-			pos_bases['T']=int(count[contig][pos]['T'])
-			#print("T: %s" % (count[contig][pos]['T']))
-		if count[contig][pos]['G']:
-			pos_depth = pos_depth + int(count[contig][pos]['G'])
-			pos_bases['G']=int(count[contig][pos]['G'])
-			#print("G: %s" % (count[contig][pos]['G']))
-		#print(pos_depth)
-		if len(pos_bases) > 1:
-			#print "Max Allele", max(pos_bases, key=pos_bases.get)
-			maxAlleleFreq = (float(pos_bases[max(pos_bases, key=pos_bases.get)]))/float(pos_depth)
-			if maxAlleleFreq <= AllowedMaxAlleleFreq:
-				pos_depth_cmp = (float(pos_depth) / float(libSize)) * 1000000
-				for obsBase, obsCount in pos_bases.iteritems():
-					normalized = (float(obsCount) / float(libSize)) * 1000000
-					percBase = (normalized / pos_depth_cmp) * 100
-					countAlleleNormalized[contig][pos][obsBase]=percBase
-				alleleFreqDist = []
-				if(countAlleleNormalized[contig][pos]['A']):
-					#outOBJ.write("%s\t" % (countAlleleNormalized[contig][pos]['A']))
-					alleleFreqDist = alleleFreqDist + [countAlleleNormalized[contig][pos]['A']]
-				else:
-					#outOBJ.write("0\t")
-					alleleFreqDist = alleleFreqDist + [0]
-				if(countAlleleNormalized[contig][pos]['T']):
-					#outOBJ.write("%s\t" % (countAlleleNormalized[contig][pos]['T']))
-					alleleFreqDist = alleleFreqDist + [countAlleleNormalized[contig][pos]['T']]
-				else:
-					#outOBJ.write("0\t")
-					alleleFreqDist = alleleFreqDist + [0]
-				if(countAlleleNormalized[contig][pos]['C']):
-					#outOBJ.write("%s\t" % (countAlleleNormalized[contig][pos]['C']))
-					alleleFreqDist = alleleFreqDist + [countAlleleNormalized[contig][pos]['C']]
-				else:
-					#outOBJ.write("0\t")
-					alleleFreqDist = alleleFreqDist + [0]
-				if(countAlleleNormalized[contig][pos]['G']):
-					#outOBJ.write("%s\t" % (countAlleleNormalized[contig][pos]['G']))
-					alleleFreqDist = alleleFreqDist + [countAlleleNormalized[contig][pos]['G']]
-				else:
-					#outOBJ.write("0\t")
-					alleleFreqDist = alleleFreqDist + [0]
-				alleleFreqDist.sort()
-				outOBJ.write("%s\t%s\tFourthFreq\t%.2f" % (contig, pos, alleleFreqDist[0]))
-				outOBJ.write("\n")
-				outOBJ.write("%s\t%s\tThirdFreq\t%.2f" % (contig, pos, alleleFreqDist[1]))
-				outOBJ.write("\n")
-				outOBJ.write("%s\t%s\tSecondFreq\t%.2f" % (contig, pos, alleleFreqDist[2]))
-				outOBJ.write("\n")
-				outOBJ.write("%s\t%s\tFirstFreq\t%.2f" % (contig, pos, alleleFreqDist[3]))
-				outOBJ.write("\n")
+ for pucolumn in bamfile.pileup(contig, 0):
+  pos_depth = 0
+  pos = pucolumn.pos
+  for puread in pucolumn.pileups:
+   if not puread.is_del and not puread.is_refskip:
+    base = puread.alignment.query_sequence[puread.query_position]
+    if count[contig][pos][base]:
+     count[contig][pos][base]=count[contig][pos][base]+1
+    else:
+     count[contig][pos][base]=1
+  if count[contig][pos]['A']:
+   pos_depth = pos_depth + int(count[contig][pos]['A'])
+  if count[contig][pos]['C']:
+   pos_depth = pos_depth + int(count[contig][pos]['C'])
+  if count[contig][pos]['T']:
+   pos_depth = pos_depth + int(count[contig][pos]['T'])
+  if count[contig][pos]['G']:
+   pos_depth = pos_depth + int(count[contig][pos]['G'])
+  if len(count[contig][pos]) > 1:
+   maxAlleleFreq = (float(count[contig][pos][max(count[contig][pos], key=count[contig][pos].get)]))/float(pos_depth)
+   if maxAlleleFreq <= AllowedMaxAlleleFreq:
+    pos_depth_cpm = (float(pos_depth) / float(libSize)) * 1000000
+    for obsBase, obsCount in count[contig][pos].iteritems():
+     normalized = (float(obsCount) / float(libSize)) * 1000000
+     percBase = (normalized / pos_depth_cpm) * 100
+     countAlleleNormalized[contig][pos][obsBase]=percBase
+     alleleFreqDist = []
+     if(countAlleleNormalized[contig][pos]['A']):
+      alleleFreqDist = alleleFreqDist + [countAlleleNormalized[contig][pos]['A']]
+     else:
+      alleleFreqDist = alleleFreqDist + [0]
+     if(countAlleleNormalized[contig][pos]['T']):
+      alleleFreqDist = alleleFreqDist + [countAlleleNormalized[contig][pos]['T']]
+     else:
+      alleleFreqDist = alleleFreqDist + [0]
+     if(countAlleleNormalized[contig][pos]['C']):
+      alleleFreqDist = alleleFreqDist + [countAlleleNormalized[contig][pos]['C']]
+     else:
+      alleleFreqDist = alleleFreqDist + [0]
+    if(countAlleleNormalized[contig][pos]['G']):
+     alleleFreqDist = alleleFreqDist + [countAlleleNormalized[contig][pos]['G']]
+    else:
+     alleleFreqDist = alleleFreqDist + [0]
+    alleleFreqDist.sort()
+    outOBJ.write("%s\t%s\tFourthFreq\t%.2f" % (contig, pos, alleleFreqDist[0]))
+    outOBJ.write("\n")
+    outOBJ.write("%s\t%s\tThirdFreq\t%.2f" % (contig, pos, alleleFreqDist[1]))
+    outOBJ.write("\n")
+    outOBJ.write("%s\t%s\tSecondFreq\t%.2f" % (contig, pos, alleleFreqDist[2]))
+    outOBJ.write("\n")
+    outOBJ.write("%s\t%s\tFirstFreq\t%.2f" % (contig, pos, alleleFreqDist[3]))
+    outOBJ.write("\n")
 
 outOBJ.close()
 bamOBJ.close()
