@@ -75,6 +75,7 @@ for contig, contigSize in chromsSize.iteritems():
  for pucolumn in bamfile.pileup(contig, 0):
   pos_depth = 0
   pos = pucolumn.pos
+  pos_bases = {}
   for puread in pucolumn.pileups:
    if not puread.is_del and not puread.is_refskip:
     base = puread.alignment.query_sequence[puread.query_position]
@@ -83,18 +84,26 @@ for contig, contigSize in chromsSize.iteritems():
     else:
      count[contig][pos][base]=1
   if count[contig][pos]['A']:
+   #print "There is A:", count[contig][pos]['A']
    pos_depth = pos_depth + int(count[contig][pos]['A'])
+   pos_bases['A'] = int(count[contig][pos]['A'])
   if count[contig][pos]['C']:
+   #print "There is C:", count[contig][pos]['C']
    pos_depth = pos_depth + int(count[contig][pos]['C'])
+   pos_bases['C'] = int(count[contig][pos]['C'])
   if count[contig][pos]['T']:
+   #print "There is T:", count[contig][pos]['T']
    pos_depth = pos_depth + int(count[contig][pos]['T'])
+   pos_bases['T'] = int(count[contig][pos]['T'])
   if count[contig][pos]['G']:
+   #print "There is G:", count[contig][pos]['G']
    pos_depth = pos_depth + int(count[contig][pos]['G'])
-  if len(count[contig][pos]) > 1:
-   maxAlleleFreq = (float(count[contig][pos][max(count[contig][pos], key=count[contig][pos].get)]))/float(pos_depth)
+   pos_bases['G'] = int(count[contig][pos]['G'])
+  if len(pos_bases) > 1:
+   maxAlleleFreq = (float(pos_bases[max(pos_bases, key=pos_bases.get)]))/float(pos_depth)
    if maxAlleleFreq <= AllowedMaxAlleleFreq:
     pos_depth_cpm = (float(pos_depth) / float(libSize)) * 1000000
-    for obsBase, obsCount in count[contig][pos].iteritems():
+    for obsBase, obsCount in pos_bases.iteritems():
      normalized = (float(obsCount) / float(libSize)) * 1000000
      percBase = (normalized / pos_depth_cpm) * 100
      countAlleleNormalized[contig][pos][obsBase]=percBase
