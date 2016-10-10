@@ -11,9 +11,8 @@ import os.path
 
 ###################################
 # Dependences:
-# - python >= 2.7.8
-# - pysam  >= 0.9
-# - biopython >= 1.66
+# - python >=2.7.8
+# - pysam  >=0.9
 ###################################
 
 ###################################
@@ -69,10 +68,12 @@ bamfile = pysam.AlignmentFile(bamOBJ, "rb")
 def makehash():
 	return defaultdict(makehash)
 
+refnames = bamfile.references
+
 count = makehash()
 countAlleleNormalized = makehash()
 
-for contig, contigSize in chromsSize.iteritems():
+for contig in refnames:
  for pucolumn in bamfile.pileup(contig, 0):
   pos_depth = 0
   pos = pucolumn.pos
