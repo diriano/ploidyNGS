@@ -2,7 +2,6 @@
 
 import sys
 
-print(sys.version_info[2])
 if sys.version_info[0] != 2 or sys.version_info[1] < 7 or sys.version_info[2] < 8:
     print("This script requires Python version 2.7.8")
     sys.exit(1)
@@ -73,7 +72,9 @@ def makehash():
 count = makehash()
 countAlleleNormalized = makehash()
 
-# Count each allele at each position in chromosome
+# Traversing BAM file: Count the number of reads for 
+#  each observed nucleotide at each position in the chromosome/contig
+#  Stores the count in a dictionary of dictionaries (count) for later processing
 for contig in bamfile.references:
 	for pucolumn in bamfile.pileup(contig, 0):
 		pos_1 = pucolumn.pos
@@ -85,6 +86,9 @@ for contig in bamfile.references:
 				else:
 					count[contig][pos_1][base]=1
 
+#Traversing dictionary of dictionaries with number of reads for each observer nucleotide
+# at each position, skips monomorphic positions and positions in which the most frequent
+# nucleotide has a frequency larger than AllowedMaxAlleleFreq.
 for contig, dict2 in count.iteritems():
 	for pos, dict3 in dict2.iteritems():
 		pos_depth = 0
@@ -106,10 +110,10 @@ for contig, dict2 in count.iteritems():
 			pos_bases['G']=int(count[contig][pos]['G'])
 			#print("G: %s" % (count[contig][pos]['G']))
 		#print(pos_depth)
-		if len(pos_bases) > 1:
+		if len(pos_bases) > 1: #Skips monomorphic positions
 			#print "Max Allele", max(pos_bases, key=pos_bases.get)
 			maxAlleleFreq = (float(pos_bases[max(pos_bases, key=pos_bases.get)]))/float(pos_depth)
-			if maxAlleleFreq <= AllowedMaxAlleleFreq:
+			if maxAlleleFreq <= AllowedMaxAlleleFreq: #Skips positions in which the most frequent nucleotide has a frequency larger than AllowedMaxAlleleFreq
 				for obsBase, obsCount in pos_bases.iteritems():
 					percBase = (float(obsCount) / float(pos_depth)) * 100
 					countAlleleNormalized[contig][pos][obsBase]=percBase
@@ -139,13 +143,13 @@ for contig, dict2 in count.iteritems():
 					#outOBJ.write("0\t")
 					alleleFreqDist = alleleFreqDist + [0]
 				alleleFreqDist.sort()
-				outOBJ.write("%s\t%s\tFourthFreq\t%.2f" % (contig, pos, alleleFreqDist[0]))
+				outOBJ.write("%s\t%s\tFourth\t%.2f" % (contig, pos, alleleFreqDist[0]))
 				outOBJ.write("\n")
-				outOBJ.write("%s\t%s\tThirdFreq\t%.2f" % (contig, pos, alleleFreqDist[1]))
+				outOBJ.write("%s\t%s\tThird\t%.2f" % (contig, pos, alleleFreqDist[1]))
 				outOBJ.write("\n")
-				outOBJ.write("%s\t%s\tSecondFreq\t%.2f" % (contig, pos, alleleFreqDist[2]))
+				outOBJ.write("%s\t%s\tSecond\t%.2f" % (contig, pos, alleleFreqDist[2]))
 				outOBJ.write("\n")
-				outOBJ.write("%s\t%s\tFirstFreq\t%.2f" % (contig, pos, alleleFreqDist[3]))
+				outOBJ.write("%s\t%s\tFirst\t%.2f" % (contig, pos, alleleFreqDist[3]))
 				outOBJ.write("\n")
 
 outOBJ.close()
@@ -154,7 +158,6 @@ bamOBJ.close()
 def createRscript(table):
 	rfile=table + ".Rscript"
 	pdfFilename=table + ".ExplorePloidy.pdf"
-	title="Explore ploidy - NGS"
 	rscriptOBJ = open(rfile,"w")
         rscriptOBJ.write("library(ggplot2)\n")
         rscriptOBJ.write("datain<-read.table(\"" + table + "\",header=F)\n")
@@ -164,7 +167,7 @@ def createRscript(table):
 	rscriptOBJ.write("pdf(\""+pdfFilename+"\")\n")
 	rscriptOBJ.write("ggplot(datain,aes(x=Freq, fill=Type)) +\n")
 	rscriptOBJ.write(" geom_histogram(binwidth = 0.5, alpha=0.4) +\n")
-	rscriptOBJ.write(" ggtitle(\"title\") +\n")
+	rscriptOBJ.write(" ggtitle(\""+table+"\") +\n")
 	rscriptOBJ.write(" ylab(\"Counts positions\") +\n")
 	rscriptOBJ.write(" xlab(\"Allele Freq\") +\n")
 	rscriptOBJ.write(" scale_x_continuous(limits=c(1,100))\n")
