@@ -86,7 +86,7 @@ for contig in bamfile.references:
 				else:
 					count[contig][pos_1][base]=1
 
-#Traversing dictionary of dictionaries with number of reads for each observer nucleotide
+#Traversing dictionary of dictionaries with number of reads for each observed nucleotide
 # at each position, skips monomorphic positions and positions in which the most frequent
 # nucleotide has a frequency larger than AllowedMaxAlleleFreq.
 for contig, dict2 in count.iteritems():
