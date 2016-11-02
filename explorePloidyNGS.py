@@ -1,5 +1,13 @@
-#!/bioinf/progs/anaconda/bin/python
+#!/usr/bin/env python 
 
+import sys
+
+print(sys.version_info[2])
+if sys.version_info[0] != 2 or sys.version_info[1] < 7 or sys.version_info[2] < 8:
+    print("This script requires Python version 2.7.8")
+    sys.exit(1)
+    
+    
 import argparse
 import pysam
 from collections import defaultdict
@@ -29,21 +37,13 @@ chroms_dict = defaultdict(list)
 parser = argparse.ArgumentParser(description='Print allele frequencies per position', add_help=True)
 parser.add_argument('--out', dest='out', metavar='file.tab', type=str, help='TAB file with allele counts', required=True)
 parser.add_argument('--bam', dest='bam', metavar='mappingGenome.bam', type=str, help='BAM file used to get allele frequencies', required=True)
-parser.add_argument('--genome', dest='genome', metavar='genome.fasta', type=str, help='Genome (FASTA)', required=True)
 parser.add_argument('--max_allele_freq', dest='AllowedMaxAlleleFreq', metavar='0.95 (default)', type=float, help='Percentage of the maximum allele frequency', required=False, default=0.95)
 
 # Get information from the argparse (arguments)
 args = parser.parse_args()
 bamOBJ = open(args.bam,"r")
 outOBJ = open(args.out,"w")
-genomeOBJ = open(args.genome,"r")
 AllowedMaxAlleleFreq = args.AllowedMaxAlleleFreq
-
-# get chromosome sizes from the FASTA
-chromsSize = {} 
-
-for chr in SeqIO.parse(genomeOBJ, "fasta"):
-	chromsSize[chr.id]=len(chr.seq)
 
 # Check if bam index is present; if not, create it
 bamindexname = args.bam + ".bai"
@@ -53,7 +53,8 @@ else:
 	print("No index available for pileup. Creating an index...")
 	pysam.index(args.bam)#TODO: check that indexing worked OK
 
-# Get number of reads mapped, using idxstats, instead of samtools view, should be much faster, the ony draw back is that it only give the number of maped reads, independant of whether they were paired or not during mapping
+# Get number of reads mapped, using idxstats, instead of samtools view, should be much faster, the ony drawback is that
+#  it only gives the number of maped reads, independant of whether they were paired or not during mapping
 print("Getting the number of mapped reads from BAM")
 libSize=0
 for l in pysam.idxstats(args.bam).split('\n'):
@@ -73,16 +74,16 @@ count = makehash()
 countAlleleNormalized = makehash()
 
 # Count each allele at each position in chromosome
-for contig, contigSize in chromsSize.iteritems():
-		for pucolumn in bamfile.pileup(contig, 0):
-			pos_1 = pucolumn.pos
-			for puread in pucolumn.pileups:
-				if not puread.is_del and not puread.is_refskip:
-					base = puread.alignment.query_sequence[puread.query_position]
-					if count[contig][pos_1][base]:
-						count[contig][pos_1][base]=count[contig][pos_1][base]+1
-					else:
-						count[contig][pos_1][base]=1
+for contig in bamfile.references:
+	for pucolumn in bamfile.pileup(contig, 0):
+		pos_1 = pucolumn.pos
+		for puread in pucolumn.pileups:
+			if not puread.is_del and not puread.is_refskip:
+				base = puread.alignment.query_sequence[puread.query_position]
+				if count[contig][pos_1][base]:
+					count[contig][pos_1][base]=count[contig][pos_1][base]+1
+				else:
+					count[contig][pos_1][base]=1
 
 for contig, dict2 in count.iteritems():
 	for pos, dict3 in dict2.iteritems():
@@ -109,10 +110,8 @@ for contig, dict2 in count.iteritems():
 			#print "Max Allele", max(pos_bases, key=pos_bases.get)
 			maxAlleleFreq = (float(pos_bases[max(pos_bases, key=pos_bases.get)]))/float(pos_depth)
 			if maxAlleleFreq <= AllowedMaxAlleleFreq:
-				pos_depth_cmp = (float(pos_depth) / float(libSize)) * 1000000
 				for obsBase, obsCount in pos_bases.iteritems():
-					normalized = (float(obsCount) / float(libSize)) * 1000000
-					percBase = (normalized / pos_depth_cmp) * 100
+					percBase = (float(obsCount) / float(pos_depth)) * 100
 					countAlleleNormalized[contig][pos][obsBase]=percBase
 				alleleFreqDist = []
 				if(countAlleleNormalized[contig][pos]['A']):
