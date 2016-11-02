@@ -37,7 +37,7 @@ chroms_dict = defaultdict(list)
 parser = argparse.ArgumentParser(description='Print allele frequencies per position', add_help=True)
 parser.add_argument('--out', dest='out', metavar='file.tab', type=str, help='TAB file with allele counts', required=True)
 parser.add_argument('--bam', dest='bam', metavar='mappingGenome.bam', type=str, help='BAM file used to get allele frequencies', required=True)
-parser.add_argument('--max_allele_freq', dest='AllowedMaxAlleleFreq', metavar='0.95 (default)', type=float, help='Percentage of the maximum allele frequency', required=False, default=0.95)
+parser.add_argument('--max_allele_freq', dest='AllowedMaxAlleleFreq', metavar='0.95 (default)', type=float, help='Fraction of the maximum allele frequency (float betwen 0 and 1, default: 0.95)', required=False, default=0.95)
 
 # Get information from the argparse (arguments)
 args = parser.parse_args()
