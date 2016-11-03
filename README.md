@@ -20,7 +20,7 @@ DataTestPloidy2.tab.ExplorePloidy.pdf - diploid
 DataTestPloidy3.tab.ExplorePloidy.pdf - triploid
 DataTestPloidy4.tab.ExplorePloidy.pdf - tetraploid
 
-The interpretation of the resulting plots is based on the frequency of the proportion of each allele, in all observed heteromorphic sites (which corresponds to the x axis in the plot), observed for a given sequenced organism. A table with the expected bi-allelic proportions for each ploidy level is shown below.
+The interpretation of the resulting plots is based on the frequency of the proportion of each allele, in all observed heteromorphic sites (which corresponds to the x axis in the plot) for a given sequenced organism. A table with the expected bi-allelic proportions for each ploidy level is shown below.
 
 ^ Ploidy level ^ Genome Position ^ Allele 1 (expected proportion) ^ Allele 2 (expected proportion) ^
 | Haploidy | Monomorphic | 0 | 100 |
@@ -50,16 +50,16 @@ For example, in the diploid case, we expect only one peak with frequencies of tw
 Here is a complete example of a pipeline for ploidy analysis using ploidyNGS.
 For this example, we use a simulated diploid yeast chromosome generated using our script simulatePloidyData.py, which results in the plot above, test_data/ploidyNGS_results/DataTestPloidy2.tab.ExplorePloidy.pdf.
 
-* NOTE: For real data, the user will have only reads from sequencing, not simulated genome sequence.
+* NOTE: For real data, the user will have only reads from sequencing, not from simulated genome sequence.
 * For real data, the BAM used in ploidyNGS should be created from mapping reads to the assembled genome sequence, or to a reference sequence (e.g. a closely related strain).
 
 a) Generation of the simulated diploid organism sequences.
 
-We used the Saccharomyces cerevisiae S288c chromosome I sequence (haploid) to generate the diploid one.
+We used the Saccharomyces cerevisiae S288c chromosome I sequence (haploid) to generate the diploid one, as shown here:
 
 $ python3 simulatePloidyData.py --genome GCA_000146045.2_R64_genomic_chromosomeI.fna --heterozygosity 0.01 --ploidy 2
 
-Here, simulatePloidyData.py takes the input chromosome (GCA_000146045.2_R64_genomic_chromosomeI.fna) and creates two chromosomes (ploidy 2) with heteromorphic positions very around 100 bases (for the heterozigosity rate set, 0.01).
+Here, simulatePloidyData.py takes the input chromosome (GCA_000146045.2_R64_genomic_chromosomeI.fna) and creates two chromosomes (ploidy 2) with heteromorphic positions very around 100 bases (for the heterozigosity rate set, 0.01). In this case, the heteromorphic positions have the expected proportion for a diploid (50% of each allele).
 
 b) Generation of the simulated reads for the diploid organism.
 
@@ -69,7 +69,7 @@ $ art_illumina -na -i simulatedChroms_Ploidy2_Heter0.01.fasta -p -l 100 -ss HS25
 
 The paired-end reads are generated with 100 bases and an average fragment size of 200.
 
-The fastq files are in the directory test_data/simulatedDiploidGenome :
+The .fastq files are in the directory test_data/simulatedDiploidGenome :
 
 The sofware outputs the reads in two files:
 - Ploidy2_100x1.fq.gz
@@ -102,6 +102,6 @@ The script outputs two files:
 - DataTestPloidy4.tab.ExplorePloidy.pdf, the plot with the frequencies of allele proportions in heterozygous sites.
 - DataTestPloidy2.tab.Rscript, the R script used to generate the plot above. 
 
-REFERENCES:
+REFERENCE:
 
 Huang, Weichun, et al. "ART: a next-generation sequencing read simulator." Bioinformatics 28.4 (2012): 593-594.
