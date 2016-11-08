@@ -1,28 +1,30 @@
 # ploidyNGS
 Explore ploidy levels from NGS data alone
 
-
-Requirements
+## Requirements
 
 - python >=2.7.8
 - pysam  >=0.9
+- biopython >=1.66
+- ggplot2
 
-Examples and test
+# Examples and test
 -------------------
 
-1) Interpretation of results of ploidyNGS with different ploidy levels
+## Interpretation of results of ploidyNGS with different ploidy levels
 
 In the directory test_data, we provide examples of ploidyNGS results.
 The resulting pdf files for each ploidyNGS run are found in directory test_data/ploidyNGS_results.
 
-DataTestPloidy1.tab.ExplorePloidy.pdf - haploid organism
-DataTestPloidy2.tab.ExplorePloidy.pdf - diploid
-DataTestPloidy3.tab.ExplorePloidy.pdf - triploid
-DataTestPloidy4.tab.ExplorePloidy.pdf - tetraploid
+- DataTestPloidy1.tab.ExplorePloidy.pdf - haploid organism
+- DataTestPloidy2.tab.ExplorePloidy.pdf - diploid
+- DataTestPloidy3.tab.ExplorePloidy.pdf - triploid
+- DataTestPloidy4.tab.ExplorePloidy.pdf - tetraploid
 
 The interpretation of the resulting plots is based on the frequency of the proportion of each allele, in all observed heteromorphic sites (which corresponds to the x axis in the plot) for a given sequenced organism. A table with the expected bi-allelic proportions for each ploidy level is shown below.
 
-^ Ploidy level ^ Genome Position ^ Allele 1 (expected proportion) ^ Allele 2 (expected proportion) ^
+| Ploidy level | Genome Position | Allele 1 (expected proportion) | Allele 2 (expected proportion) |
+| ------------ | --------------- |-------------------------------:|-------------------------------:|
 | Haploidy | Monomorphic | 0 | 100 |
 | Diploidy | Monomorphic | 0 | 100 |
 | Diploidy | Heteromorphic | 50 | 50 |
@@ -45,17 +47,17 @@ The interpretation of the resulting plots is based on the frequency of the propo
 
 For example, in the diploid case, we expect only one peak with frequencies of two alleles, both representing 50% of the observations, as observed in figure DataTestPloidy2.tab.ExplorePloidy.pdf. Other observed proportions in this plot correspond to noise due to sequencing errors.
 
-2) Full analysis example - diploid organism
+## Full analysis example - diploid organism
 
-Here is a complete example of a pipeline for ploidy analysis using ploidyNGS.
-For this example, we use a simulated diploid yeast chromosome generated using our script simulatePloidyData.py, which results in the plot above, test_data/ploidyNGS_results/DataTestPloidy2.tab.ExplorePloidy.pdf.
+Here is a complete example of a pipeline for ploidy analysis using `ploidyNGS`.
+For this example, we use a simulated diploid yeast chromosome generated using our script `simulatePloidyData.py`, which results in the plot above, test_data/ploidyNGS_results/DataTestPloidy2.tab.ExplorePloidy.pdf.
 
 * NOTE: For real data, the user will have only reads from sequencing, not from simulated genome sequence.
 * For real data, the BAM used in ploidyNGS should be created from mapping reads to the assembled genome sequence, or to a reference sequence (e.g. a closely related strain).
 
 a) Generation of the simulated diploid organism sequences.
 
-We used the Saccharomyces cerevisiae S288c chromosome I sequence (haploid) to generate the diploid one, as shown here:
+We used the *Saccharomyces cerevisiae* S288c chromosome I sequence (haploid) to generate the diploid one, as shown here:
 
 $ python3 simulatePloidyData.py --genome GCA_000146045.2_R64_genomic_chromosomeI.fna --heterozygosity 0.01 --ploidy 2
 
@@ -82,7 +84,7 @@ c) Mapping step using Bowtie2.
 A BAM with reads mapping the genomic sequence is required in ploidyNGS main script.
 It can be generated with Bowtie2 or other mapping algorithm.
 
-Here, we used the haploid S. cerevisiae chromosome I to map our reads from the diploid. Here is how Bowtie2 (version 2.2.3) is run:
+Here, we used the haploid *S. cerevisiae* chromosome I to map our reads from the diploid. Here is how `Bowtie2` (version 2.2.3) is run:
 
 $ bowtie2 --met-file align_metrics.txt -t --very-sensitive -q -x GCA_000146045.2_R64_genomic_chromosomeI.fna -1 Ploidy2_100x1.fq -2 Ploidy2_100x2.fq | samtools view -bS - | samtools sort - Ploidy2.bowtie2.sorted
 
@@ -92,9 +94,9 @@ If you are working on a multi-threaded cluster, Bowtie2 (and other mappers) also
 
 The resulting BAM file is then used in ploidyNGS script (next step).
 
-d) Running ploidyNGS main script (explorePloidyNGS.py)
+d) Running ploidyNGS main script (`explorePloidyNGS.py`)
 
-explorePloidyNGS.py only requires a BAM and a name for the output file. Here is how to use it:
+`explorePloidyNGS.py` only requires a BAM and a name for the output file. Here is how to use it:
 
 $ explorePloidyNGS.py --out DataTestPloidy2.tab --bam Ploidy2.bowtie2.sorted.bam 
 
@@ -102,6 +104,6 @@ The script outputs two files:
 - DataTestPloidy4.tab.ExplorePloidy.pdf, the plot with the frequencies of allele proportions in heterozygous sites.
 - DataTestPloidy2.tab.Rscript, the R script used to generate the plot above. 
 
-REFERENCE:
+# REFERENCE
 
-Huang, Weichun, et al. "ART: a next-generation sequencing read simulator." Bioinformatics 28.4 (2012): 593-594.
+Huang, Weichun, et al. "ART: a next-generation sequencing read simulator." `Bioinformatics` 28.4 (2012): 593-594.
