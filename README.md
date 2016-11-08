@@ -16,10 +16,10 @@ Explore ploidy levels from NGS data alone
 In the directory test_data, we provide examples of ploidyNGS results.
 The resulting pdf files for each ploidyNGS run are found in directory test_data/ploidyNGS_results.
 
-- DataTestPloidy1.tab.ExplorePloidy.pdf - haploid organism
-- DataTestPloidy2.tab.ExplorePloidy.pdf - diploid
-- DataTestPloidy3.tab.ExplorePloidy.pdf - triploid
-- DataTestPloidy4.tab.ExplorePloidy.pdf - tetraploid
+- `DataTestPloidy1.tab.ExplorePloidy.pdf` - haploid organism
+- `DataTestPloidy2.tab.ExplorePloidy.pdf` - diploid
+- `DataTestPloidy3.tab.ExplorePloidy.pdf` - triploid
+- `DataTestPloidy4.tab.ExplorePloidy.pdf` - tetraploid
 
 The interpretation of the resulting plots is based on the frequency of the proportion of each allele, in all observed heteromorphic sites (which corresponds to the x axis in the plot) for a given sequenced organism. A table with the expected bi-allelic proportions for each ploidy level is shown below.
 
@@ -112,7 +112,7 @@ The script outputs two files:
 - `DataTestPloidy4.tab.ExplorePloidy.pdf`, the plot with the frequencies of allele proportions in heterozygous sites.
 - `DataTestPloidy2.tab.Rscript`, the R script used to generate the plot above. 
 
-# REFERENCE
+# REFERENCES
 
 Huang, Weichun, et al. "ART: a next-generation sequencing read simulator." *Bioinformatics* 28.4 (2012): 593-594.
 
