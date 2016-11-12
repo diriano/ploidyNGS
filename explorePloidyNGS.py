@@ -193,4 +193,4 @@ createRscript(args.out)
 cmdRscript="Rscript "+ args.out + ".Rscript"
 os.system(cmdRscript)
 #TODO Remove temporary files, e.g., *.tbl,*.Rscript
-os.remove(args.out)
+#os.remove(args.out)
