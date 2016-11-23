@@ -33,26 +33,23 @@ The resulting PDF (PNG versions are also provided) files for each ploidyNGS run 
 - `DataTestPloidy3.tab.ExplorePloidy.pdf` - triploid
 - `DataTestPloidy4.tab.ExplorePloidy.pdf` - tetraploid
 
-For the interpretation of the resulting plots you can either use our simulation data (https://github.com/diriano/ploidyNGS/tree/master/simulation/results) or the following table. Briefly, in `ploidyNGS`'s graphs, the X-axis position of the peaks is directly related to the ploidy level of the organism under study. For instance, if you observe peaks for the two most frequent alleles close to 50%, you have a diploid organism (see `DataTestPloidy2.tab.ExplorePloidy.pdf`). The percentages mean that for heteromorphic positions, each allele was covered by approx. the same ammount of reads.
+For the interpretation of the resulting plots you can either use our simulation data (https://github.com/diriano/ploidyNGS/tree/master/simulation/results) or the following table. Briefly, in `ploidyNGS`'s graphs, the X-axis position of the peaks is directly related to the ploidy level of the organism under study. For instance, if you observe peaks for the two most frequent alleles close to 50%, you have a diploid organism (see `DataTestPloidy2.tab.ExplorePloidy.pdf`). The percentages mean that for heteromorphic positions, each allele was covered by approx. that percent of total reads in the positions.
 
-The interpretation of the resulting plots is based on the frequency of the proportion of each allele, in all observed heteromorphic sites (which corresponds to the x axis in the plot) for a given sequenced organism. A table with the expected bi-allelic proportions for each ploidy level is shown below.
 
-| Ploidy level | Genome Position | Second most frequent allele (expected proportion) | Most frequence allele (expected proportion) |
-| ------------ | --------------- |-------------------------------:|-------------------------------:|
-| Diploidy | Heteromorphic | 50 | 50 |
-| Triploidy | Heteromorphic | 33.33 | 66.67 |
-| Tetraploidy | Heteromorphic | 25 | 75 |
-| Tetraploidy | Heteromorphic | 50 | 50 |
-| Pentaploidy | Heteromorphic | 20 | 80 |
-| Pentaploidy | Heteromorphic | 40 | 60 |
-| Hexaploidy | Heteromorphic | 16.67 | 83.33 |
-| Hexaploidy | Heteromorphic | 50 | 50 |
-| Hexaploidy | Heteromorphic | 33.33 | 66.67 |
-| Heptaploidy | Heteromorphic | 28.57 | 71.43 |
-| Heptaploidy | Heteromorphic | 42.86 | 57.14 |
-| Heptaploidy | Heteromorphic | 14.29 | 85.71 |
-
-For example, in the diploid case, we expect only one peak with frequencies of two alleles, both representing 50% of the observations, as observed in figure `DataTestPloidy2.tab.ExplorePloidy.pdf`. Other observed proportions in this plot correspond to noise due to sequencing errors.
+| Ploidy level | Second most frequent allele (expected proportion) | Most frequence allele (expected proportion) |
+| ------------ |-------------------------------:|-------------------------------:|
+| Diploidy | 50 | 50 |
+| Triploidy | 33.33 | 66.67 |
+| Tetraploidy | 25 | 75 |
+| Tetraploidy | 50 | 50 |
+| Pentaploidy | 20 | 80 |
+| Pentaploidy | 40 | 60 |
+| Hexaploidy | 16.67 | 83.33 |
+| Hexaploidy | 50 | 50 |
+| Hexaploidy | 33.33 | 66.67 |
+| Heptaploidy | 28.57 | 71.43 |
+| Heptaploidy | 42.86 | 57.14 |
+| Heptaploidy | 14.29 | 85.71 |
 
 ## Full analysis example - diploid organism
 
