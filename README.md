@@ -6,7 +6,7 @@ Explore ploidy levels from NGS data alone
 - python >=2.7.8
 - pysam  >=0.9
 - biopython >=1.66
-- ggplot2
+- R and ggplot2
 
 # Examples and test
 -------------------
