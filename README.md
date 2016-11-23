@@ -1,5 +1,12 @@
 # ploidyNGS
-Explore ploidy levels from NGS data alone
+Exploring ploidy levels from NGS data alone.
+
+**Motivation:** Due to the decreasing costs of genome sequencing researchers are increasingly assessing the genome information of non-model organisms using Next Generation Sequencing technologies. An important question to answer when assessing a new genome sequence is: What is the ploidy level of the organism under study?
+
+**Results:** We have developed \texttt{ploidyNGS}, a model-free, open source tool to visualize and explore ploidy levels in a newly sequenced genome, exploiting short read data. We tested \texttt{ploidyNGS} using both simulated and real NGS data of the model yeast \textit{Saccharomyces cerevisiae}. \texttt{ploidyNGS} allows the identification of the ploidy level of a newly sequenced genome in a visual way. We have applied \texttt{ploidyNGS} to a wide range of different genome ploidy and heterozigosity levels, as well as to a range of sequencing depths.
+
+**Availability and implementation:** `ploidyNGS` is available under the GNU General Public License (GPL) at https://github.com/diriano/ploidyNGS. ploidyNGS is implemented in Python and R.
+
 
 ## Requirements
 
