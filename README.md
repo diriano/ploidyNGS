@@ -33,7 +33,7 @@ The resulting PDF (PNG versions are also provided) files for each ploidyNGS run 
 - `DataTestPloidy3.tab.ExplorePloidy.pdf` - triploid
 - `DataTestPloidy4.tab.ExplorePloidy.pdf` - tetraploid
 
-For the interpretation of the resulting plots you can either use our simulation data (https://github.com/diriano/ploidyNGS/tree/master/simulation/results) or the following table. Briefly, the X-axis position of the peaks is directly related to the ploidy level of the organism under study. For instance, if you observe peaks for the two most frequent alleles close to 50%, you have a diploid organism. The percentages mean that for heteromorphic positions, each allele was covered by approx. the same ammount of reads.
+For the interpretation of the resulting plots you can either use our simulation data (https://github.com/diriano/ploidyNGS/tree/master/simulation/results) or the following table. Briefly, in `ploidyNGS`'s graphs, the X-axis position of the peaks is directly related to the ploidy level of the organism under study. For instance, if you observe peaks for the two most frequent alleles close to 50%, you have a diploid organism (see `DataTestPloidy2.tab.ExplorePloidy.pdf`). The percentages mean that for heteromorphic positions, each allele was covered by approx. the same ammount of reads.
 
 The interpretation of the resulting plots is based on the frequency of the proportion of each allele, in all observed heteromorphic sites (which corresponds to the x axis in the plot) for a given sequenced organism. A table with the expected bi-allelic proportions for each ploidy level is shown below.
 
