@@ -124,7 +124,7 @@ a) look at individual chromosomes. For this you can use bamtools, check: https:/
 
 b) look at a region of a single chromosome.
 
-The running time and memory usage of `ploidyNGS` depends on the number of reads, i.e., the sequencing depth. We have seen that a sequencing depth of 100x is enough to get a good idea of the ploidy level. So if you have more sequenced your genome to a larger depth, please sub-sample you data before creating the BAM file for `ploidyNGS`.
+The running time and memory usage of `ploidyNGS` depends on the number of reads, i.e., the sequencing depth. We have seen that a sequencing depth of 100x is enough to get a good idea of the ploidy level. So if you have sequenced your genome to a larger depth, please sub-sample you data before creating the BAM file for `ploidyNGS`.
 
 # REFERENCES
 
