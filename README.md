@@ -116,6 +116,16 @@ The script outputs two files:
 - `DataTestPloidy4.tab.ExplorePloidy.pdf`, the plot with the frequencies of allele proportions in heterozygous sites.
 - `DataTestPloidy2.tab.Rscript`, the R script used to generate the plot above. 
 
+# RECOMMENDATIONS
+
+`ploidyNGS` was developed to assess ploidy level in small genomes, of a few tens Mbp. If your genome is larger than that we recommend that you:
+
+a) look at individual chromosomes. For this you can use bamtools, check: https://www.biostars.org/p/46327/.
+
+b) look at a region of a single chromosome.
+
+The running time and memory usage of `ploidyNGS` depends on the number of reads, i.e., the sequencing depth. We have seen that a sequencing depth of 100x is enough to get a good idea of the ploidy level. So if you have more sequenced your genome to a larger depth, please sub-sample you data before creating the BAM file for `ploidyNGS`.
+
 # REFERENCES
 
 Huang, Weichun, et al. "ART: a next-generation sequencing read simulator." *Bioinformatics* 28.4 (2012): 593-594.
