@@ -17,7 +17,7 @@ import sys
 
 #Making sure you are running a version of python that works with this script.
 if sys.version_info[0] != 2 or sys.version_info[1] < 7 or sys.version_info[2] < 8:
-    print("This script requires Python version 2.7.8")
+    print("This script requires Python version 2.7.8 or higher within major version 2")
     sys.exit(1)
     
     
@@ -49,15 +49,19 @@ chroms_dict = defaultdict(list)
 
 parser = argparse.ArgumentParser(description='ploidyNGS: Visual exploration of ploidy levels', add_help=True)
 parser.add_argument('-v','--version', action='version', version='%(prog)s 1.0')
-parser.add_argument('-o','--out', dest='out', metavar='file.tab', type=str, help='TAB file with allele counts', required=True)
+parser.add_argument('-o','--out', dest='out', metavar='file', type=str, help='Base name for a TAB file that will keep the allele counts', required=True)
 parser.add_argument('-b','--bam', dest='bam', metavar='mappingGenome.bam', type=str, help='BAM file used to get allele frequencies', required=True)
 parser.add_argument('-m','--max_allele_freq', dest='AllowedMaxAlleleFreq', metavar='0.95 (default)', type=float, help='Fraction of the maximum allele frequency (float betwen 0 and 1, default: 0.95)', required=False, default=0.95)
+parser.add_argument('-d','--max_depth', dest='MaxDepth', metavar='100 (default)', type=int, help='Max number of reads kepth at each position in the reference genome (integer, default: 100)', required=False, default=100)
 
 # Get information from the argparse (arguments)
 args = parser.parse_args()
 bamOBJ = open(args.bam,"r")
-outOBJ = open(args.out,"w")
 AllowedMaxAlleleFreq = args.AllowedMaxAlleleFreq
+MaxDepth=args.MaxDepth
+baseOut=args.out + "_depth" + str(MaxDepth)
+fileOut=baseOut + ".tab"
+outOBJ = open(fileOut,"w")
 
 # Check if bam index is present; if not, create it
 bamindexname = args.bam + ".bai"
@@ -93,13 +97,17 @@ countAlleleNormalized = makehash()
 for contig in bamfile.references:
 	for pucolumn in bamfile.pileup(contig, 0):
 		pos_1 = pucolumn.pos
+		countReadsPos=0
+		#print("Contig: " + contig + " Chromosome Position:" + str(pos_1))
 		for puread in pucolumn.pileups:
-			if not puread.is_del and not puread.is_refskip:
+			if not puread.is_del and not puread.is_refskip and countReadsPos <= MaxDepth-1:
+				countReadsPos=countReadsPos+1
 				base = puread.alignment.query_sequence[puread.query_position]
 				if count[contig][pos_1][base]:
 					count[contig][pos_1][base]=count[contig][pos_1][base]+1
 				else:
 					count[contig][pos_1][base]=1
+		#print("Total number of reads: " + str(countReadsPos))
 
 #Traversing dictionary of dictionaries with number of reads for each observed nucleotide
 # at each position, skips monomorphic positions and positions in which the most frequent
@@ -170,27 +178,6 @@ for contig, dict2 in count.iteritems():
 outOBJ.close()
 bamOBJ.close()
 
-def createRscript(table):
-	rfile=table + ".Rscript"
-	pdfFilename=table + ".ExplorePloidy.pdf"
-	rscriptOBJ = open(rfile,"w")
-        rscriptOBJ.write("library(ggplot2)\n")
-        rscriptOBJ.write("datain<-read.table(\"" + table + "\",header=F)\n")
-	rscriptOBJ.write("colnames(datain)<-c('Chrom','Pos','Type','Freq')\n")
-	#rscriptOBJ.write("head(datain)\n")
-	#rscriptOBJ.write("dim(datain)\n")
-	rscriptOBJ.write("pdf(\""+pdfFilename+"\")\n")
-	rscriptOBJ.write("ggplot(datain,aes(x=Freq, fill=Type)) +\n")
-	rscriptOBJ.write(" geom_histogram(binwidth = 0.5, alpha=0.4) +\n")
-	rscriptOBJ.write(" ggtitle(\""+table+"\") +\n")
-	rscriptOBJ.write(" ylab(\"Counts positions\") +\n")
-	rscriptOBJ.write(" xlab(\"Allele Freq\") +\n")
-	rscriptOBJ.write(" scale_x_continuous(limits=c(1,100))\n")
-	rscriptOBJ.write("dev.off()\n")
-	return;
-
-createRscript(args.out)
-cmdRscript="Rscript "+ args.out + ".Rscript"
+cmdRscript="Rscript --vanilla ploidyNGS_generateHistogram.R "+ fileOut + " " + fileOut +".PloidyNGS.pdf" + " " + str(1-AllowedMaxAlleleFreq) + " " + str(AllowedMaxAlleleFreq)
+#print(cmdRscript)
 os.system(cmdRscript)
-#TODO Remove temporary files, e.g., *.tbl,*.Rscript
-#os.remove(args.out)
