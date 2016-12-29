@@ -11,7 +11,7 @@ hist_plot<-ggplot(datain,aes(x=Freq, fill=Type)) +
   ylab("Count positions") +
   xlab("Allele Freq") +
   scale_x_continuous(limits=c(1,100))+
-  scale_fill_manual(values=c("#920000", "#24FF24", "#6DB6FF", "#FFFF6D"))
+  scale_fill_manual(values=c("#920000", "#24FF24", "#6DB6FF", "#FFFF6D")) #Friendly to colour-blind users: http://www.somersault1824.com/tips-for-designing-scientific-figures-for-color-blind-readers/
 pdf(file=args[2])
 suppressWarnings(print(hist_plot))
 invisible(dev.off())
