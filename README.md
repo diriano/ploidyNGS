@@ -18,48 +18,56 @@
 ### Get ploidyNGS from github
 
 ```bash
-  git clone https://github.com/diriano/ploidyNGS.git
+git clone https://github.com/diriano/ploidyNGS.git
 ```
 ### Python virtual environment and python dependencies
 
 Make sure pip is installed. If not, then please check your distribution's documentation and install it. In Ubuntu 16.04 LTS you can do:
 
 ```bash
-  sudo apt install python-pip
+sudo apt install python-pip
 ```
 
 Install the virtualenv module:
 
 ```bash
-  pip install --upgrade pip
-  pip install virtualenv
+pip install --upgrade pip
+pip install virtualenv
 ```
 
 Go to the ploidyNGS folder, create and active a new virtual environment
 
 ```bash
-  cd ploidyNGS
-  virtualenv .venv
-  source .venv/bin/activate
+cd ploidyNGS
+virtualenv .venv
+source .venv/bin/activate
 ```
 
 Install dependencies:
 
-```bash
-  pip install pysam
-```
-
 pysam requires the zlib headers. Please make sure you have these installed. In Ubuntu 16.04 LTS you can do:
 
 ```bash
-  sudo apt install zlib1g-dev
+sudo apt install zlib1g-dev
+```
+
+Then install pysam:
+
+```bash
+pip install pysam
 ```
 
 Install biopython dependencies, and then biopython itself (for details see: http://biopython.org/DIST/docs/install/Installation.html):
 
 ```bash
-  pip install numpy
-  pip install biopython
+pip install numpy
+pip install biopython
+```
+
+At this point you can deactive the python virtual environment:
+
+```bash
+deactivate
 ```
 ### R
 
@@ -72,6 +80,36 @@ In Ubuntu 16.04 LTS:
 
 ### Test ploidyNGS
 
+In order to use `ploidyNGS` please start by activating the python virtual environment that you created before:
+
+```bash
+cd ~
+cd ploidyNGS
+source .venv/bin/activate
+```
+
+And then run:
+
+```bash
+./explorePloidyNGS.py -o diploidTest -b test_data/simulatedDiploidGenome/Ploidy2.bowtie2.sorted.bam
+```
+
+This should print the following in your screen:
+
+```bash
+No index available for pileup. Creating an index...
+Getting the number of mapped reads from BAM
+460400
+```
+
+And generate the files:
+
+* diploidTest_depth100.tab
+* diploidTest_depth100.tab.PloidyNGS.pdf
+
+The PDF file should have a histogram identical to the one shown below:
+
+![https://github.com/diriano/ploidyNGS/tree/master/images/diploidTest_depth100.tab.PloidyNGS.png]
 
 ## Examples and test
 -------------------
