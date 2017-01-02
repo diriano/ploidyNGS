@@ -107,9 +107,9 @@ And generate the files:
 * diploidTest_depth100.tab
 * diploidTest_depth100.tab.PloidyNGS.pdf
 
-The PDF file should have a histogram identical to the one shown below:
+The PDF file should have a histogram identical to this:
 
-![https://github.com/diriano/ploidyNGS/tree/master/images/diploidTest_depth100.tab.PloidyNGS.png]
+![https://github.com/diriano/ploidyNGS/tree/master/images/diploidTest_depth100.tab.PloidyNGS.png](https://github.com/diriano/ploidyNGS/tree/master/images/diploidTest_depth100.tab.PloidyNGS.png)
 
 ## Examples and test
 -------------------
