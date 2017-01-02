@@ -13,6 +13,22 @@
 - biopython >=1.66
 - R and ggplot2
 
+## Installation
+
+### Python virtual environment
+
+Make sure pip is installed. If not, then please check you distribution's documentation and install it. In Ubuntu 16.04 LTS you can do:
+
+```bash
+  sudo apt install python-pip
+```
+
+Install the virtualenvironment module:
+
+```bash
+  pip install virtualenv
+```
+
 ## Examples and test
 -------------------
 
