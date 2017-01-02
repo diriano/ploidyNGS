@@ -107,9 +107,13 @@ And generate the files:
 * diploidTest_depth100.tab
 * diploidTest_depth100.tab.PloidyNGS.pdf
 
-The PDF file should have a histogram identical to this:
+The PDF file should have a histogram identical to this https://github.com/diriano/ploidyNGS/tree/master/images/diploidTest_depth100.tab.PloidyNGS.png
 
-![https://github.com/diriano/ploidyNGS/tree/master/images/diploidTest_depth100.tab.PloidyNGS.png](https://github.com/diriano/ploidyNGS/tree/master/images/diploidTest_depth100.tab.PloidyNGS.png)
+After running ploidyNGS, do not forget to deactivate your python virtual environment:
+
+```bash
+deactivate
+```
 
 ## Examples and test
 -------------------
