@@ -15,19 +15,63 @@
 
 ## Installation
 
-### Python virtual environment
+### Get ploidyNGS from github
 
-Make sure pip is installed. If not, then please check you distribution's documentation and install it. In Ubuntu 16.04 LTS you can do:
+```bash
+  git clone https://github.com/diriano/ploidyNGS.git
+```
+### Python virtual environment and python dependencies
+
+Make sure pip is installed. If not, then please check your distribution's documentation and install it. In Ubuntu 16.04 LTS you can do:
 
 ```bash
   sudo apt install python-pip
 ```
 
-Install the virtualenvironment module:
+Install the virtualenv module:
 
 ```bash
+  pip install --upgrade pip
   pip install virtualenv
 ```
+
+Go to the ploidyNGS folder, create and active a new virtual environment
+
+```bash
+  cd ploidyNGS
+  virtualenv .venv
+  source .venv/bin/activate
+```
+
+Install dependencies:
+
+```bash
+  pip install pysam
+```
+
+pysam requires the zlib headers. Please make sure you have these installed. In Ubuntu 16.04 LTS you can do:
+
+```bash
+  sudo apt install zlib1g-dev
+```
+
+Install biopython dependencies, and then biopython itself (for details see: http://biopython.org/DIST/docs/install/Installation.html):
+
+```bash
+  pip install numpy
+  pip install biopython
+```
+### R
+
+In Ubuntu 16.04 LTS:
+
+```bash
+  sudo apt install r-base
+  sudo apt install r-cran-ggplot2
+```
+
+### Test ploidyNGS
+
 
 ## Examples and test
 -------------------
