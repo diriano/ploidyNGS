@@ -117,6 +117,13 @@ deactivate
 ```
 ## ploidyNGS usage and examples
 
+Active the python virtual environment, created above, before using `ploidyNGS`:
+
+````bash
+cd ~/ploidyNGS/
+source .venv/bin/activate
+```
+
 The switch `-h` will give you access to the full help page:
 
 ```bash
@@ -143,9 +150,11 @@ optional arguments:
 
 There are two required parameters: the input BAM file (`-b` or `--bam`) and a string (`-o` or `--out`) that will be used to generate the output files.
 
-Two additional parameters help you control some of hte behavior of `ploidyNGS`:
+Two additional parameters help you control some of the behavior of `ploidyNGS`:
 
-* `-m` or `--max_allele_freq`
+* `-m` or `--max_allele_freq`: Float between 0 and 1. Default 0.95. Ignore positions where the frequencey of the most abundant allele is higher or equal than `max_allele_freq`
+* `-d` or `--max_depth`: Integer. Default 100. Maximum sequencing depth to consider, e.g., if d=100, then only the first 100 mapped reads will be examined.
+
 ## Examples and test
 -------------------
 
@@ -257,7 +266,7 @@ a) look at individual chromosomes. For this you can use bamtools, check: https:/
 
 b) look at a region of a single chromosome.
 
-The running time and memory usage of `ploidyNGS` depends on the number of reads, i.e., the sequencing depth. We have seen that a sequencing depth of 100x is enough to get a good idea of the ploidy level. So if you have sequenced your genome to a larger depth, please sub-sample you data before creating the BAM file for `ploidyNGS`.
+The running time and memory usage of `ploidyNGS` depends on the number of reads in the BAM file, i.e., the sequencing depth. We have seen that a sequencing depth of 100x is enough to get a good idea of the ploidy level. So if you have sequenced your genome to a larger depth, please sub-sample you data before creating the BAM file for `ploidyNGS`. Alternatively you could use the parameter `-d` in `ploidyNGS` to look at the `d` first mapped reads, however pysam will still load the full BAM file.
 
 # REFERENCES
 
