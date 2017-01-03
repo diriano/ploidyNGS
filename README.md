@@ -18,6 +18,7 @@
 ### Get ploidyNGS from github
 
 ```bash
+cd ~
 git clone https://github.com/diriano/ploidyNGS.git
 ```
 ### Python virtual environment and python dependencies
@@ -91,7 +92,7 @@ source .venv/bin/activate
 And then run:
 
 ```bash
-./explorePloidyNGS.py -o diploidTest -b test_data/simulatedDiploidGenome/Ploidy2.bowtie2.sorted.bam
+./ploidyNGS.py -o diploidTest -b test_data/simulatedDiploidGenome/Ploidy2.bowtie2.sorted.bam
 ```
 
 This should print the following in your screen:
@@ -114,7 +115,36 @@ After running ploidyNGS, do not forget to deactivate your python virtual environ
 ```bash
 deactivate
 ```
+## ploidyNGS usage and examples
 
+The switch `-h` will give you access to the full help page:
+
+```bash./ploidyNGS.py -h
+usage: ploidyNGS.py [-h] [-v] -o file -b mappingGenome.bam [-m 0.95 default)]
+                    [-d 100 (default]
+
+ploidyNGS: Visual exploration of ploidy levels
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -v, --version         show program's version number and exit
+  -o file, --out file   Base name for a TAB file that will keep the allele
+                        counts
+  -b mappingGenome.bam, --bam mappingGenome.bam
+                        BAM file used to get allele frequencies
+  -m 0.95 (default), --max_allele_freq 0.95 (default)
+                        Fraction of the maximum allele frequency (float betwen
+                        0 and 1, default: 0.95)
+  -d 100 (default), --max_depth 100 (default)
+                        Max number of reads kepth at each position in the
+                        reference genome (integer, default: 100)
+```
+
+There are two required parameters: the input BAM file (`-b` or `--bam`) and a string (`-o` or `--out`) that will be used to generate the output files.
+
+Two additional parameters help you control some of hte behavior of `ploidyNGS`:
+
+* `-m` or `--max_allele_freq`
 ## Examples and test
 -------------------
 
@@ -206,12 +236,12 @@ If you are working on a multi-threaded cluster, `Bowtie2` (and other mappers) al
 
 The resulting BAM file is then used in ploidyNGS script (next step).
 
-d) Running ploidyNGS main script (`explorePloidyNGS.py`)
+d) Running ploidyNGS main script (`ploidyNGS.py`)
 
-`explorePloidyNGS.py` only requires a BAM and a name for the output file. Here is how to use it:
+`ploidyNGS.py` only requires a BAM and a name for the output file. Here is how to use it:
 
 ```
-$ explorePloidyNGS.py --out DataTestPloidy2.tab --bam Ploidy2.bowtie2.sorted.bam 
+$ ploidyNGS.py --out DataTestPloidy2.tab --bam Ploidy2.bowtie2.sorted.bam 
 ```
 
 The script outputs two files:
