@@ -119,7 +119,8 @@ deactivate
 
 The switch `-h` will give you access to the full help page:
 
-```bash./ploidyNGS.py -h
+```bash
+./ploidyNGS.py -h
 usage: ploidyNGS.py [-h] [-v] -o file -b mappingGenome.bam [-m 0.95 default)]
                     [-d 100 (default]
 
