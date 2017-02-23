@@ -56,7 +56,7 @@ parser.add_argument('-d','--max_depth', dest='MaxDepth', metavar='100 (default)'
 
 # Get information from the argparse (arguments)
 args = parser.parse_args()
-bamOBJ = open(args.bam,"r")
+bamOBJ = args.bam
 AllowedMaxAlleleFreq = args.AllowedMaxAlleleFreq
 MaxDepth=args.MaxDepth
 baseOut=args.out + "_depth" + str(MaxDepth)
@@ -176,7 +176,6 @@ for contig, dict2 in count.iteritems():
 				outOBJ.write("\n")
 
 outOBJ.close()
-bamOBJ.close()
 
 cmdRscript="Rscript --vanilla ploidyNGS_generateHistogram.R "+ fileOut + " " + fileOut +".PloidyNGS.pdf" + " " + str(1-AllowedMaxAlleleFreq) + " " + str(AllowedMaxAlleleFreq)
 #print(cmdRscript)
