@@ -1,5 +1,9 @@
 #ploidyNGS_generateHistogram.R
 
+# __author__      = "Diego Mauricio Riano-Pachon & Renato Augusto Correa dos Santos"
+# __copyright__   = "Copyright 2016,2017"
+# __license__     = "GPL v3.0"
+
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
