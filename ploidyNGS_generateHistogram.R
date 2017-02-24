@@ -3,6 +3,8 @@
 # __author__      = "Diego Mauricio Riano-Pachon & Renato Augusto Correa dos Santos"
 # __copyright__   = "Copyright 2016,2017"
 # __license__     = "GPL v3.0"
+# __maintainer__  = "Diego Mauricio Riano-Pachon"
+# __email__       = "diriano@gmail.com"
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
