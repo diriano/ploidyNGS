@@ -29,26 +29,22 @@ from Bio import SeqIO
 from Bio.Seq import Seq
 from Bio.Alphabet import IUPAC
 import os.path
+import ploidyNGS_utils
 
 ###################################
-# Dependences:
+# Dependencies:
 # - python >= 2.7.8
 # - pysam  >= 0.9
 # - biopython >= 1.66
 ###################################
 
 ###################################
-# Global variables
-###################################
-
-chroms_dict = defaultdict(list)
-
-###################################
 # Command line arguments
 ###################################
 
+version=sys.argv[0] + ' ' + ploidyNGS_utils.git_version()
 parser = argparse.ArgumentParser(description='ploidyNGS: Visual exploration of ploidy levels', add_help=True)
-parser.add_argument('-v','--version', action='version', version='%(prog)s 1.0')
+parser.add_argument('-v','--version', action='version', version=version)
 parser.add_argument('-o','--out', dest='out', metavar='file', type=str, help='Base name for a TAB file that will keep the allele counts', required=True)
 parser.add_argument('-b','--bam', dest='bam', metavar='mappingGenome.bam', type=str, help='BAM file used to get allele frequencies', required=True)
 parser.add_argument('-m','--max_allele_freq', dest='AllowedMaxAlleleFreq', metavar='0.95 (default)', type=float, help='Fraction of the maximum allele frequency (float betwen 0 and 1, default: 0.95)', required=False, default=0.95)
