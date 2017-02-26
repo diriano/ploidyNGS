@@ -1,5 +1,12 @@
 #!/usr/bin/env python 
 
+#Visually exploring ploidy with Next Generation Sequencing data
+__author__      = "Diego Mauricio Riano-Pachon & Renato Augusto Correa dos Santos"
+__copyright__   = "Copyright 2016,2017"
+__license__     = "GPL v3.0"
+__maintainer__  = "Diego Mauricio Riano-Pachon"
+__email__       = "diriano@gmail.com"
+
 """This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -29,6 +36,8 @@ from Bio import SeqIO
 from Bio.Seq import Seq
 from Bio.Alphabet import IUPAC
 import os.path
+import linecache
+from time import  asctime
 import ploidyNGS_utils
 
 ###################################
@@ -49,16 +58,24 @@ parser.add_argument('-o','--out', dest='out', metavar='file', type=str, help='Ba
 parser.add_argument('-b','--bam', dest='bam', metavar='mappingGenome.bam', type=str, help='BAM file used to get allele frequencies', required=True)
 parser.add_argument('-m','--max_allele_freq', dest='AllowedMaxAlleleFreq', metavar='0.95 (default)', type=float, help='Fraction of the maximum allele frequency (float betwen 0 and 1, default: 0.95)', required=False, default=0.95)
 parser.add_argument('-d','--max_depth', dest='MaxDepth', metavar='100 (default)', type=int, help='Max number of reads kepth at each position in the reference genome (integer, default: 100)', required=False, default=100)
+parser.add_argument('-g','--guess_ploidy', dest='guessPloidy', help='Try to guess ploidy level by comparison with simulated data', required=False, action="store_true")
+parser.add_argument('-c','--coverage_guess_ploidy', dest='covGuessPloidy', choices=[15,25,50,100], help='If you selected --guess_ploidy, It should be one of the coverage values for simulated data. It defaults to 100', required=False, type=int, default=100)
 
+#Print a greeting with the date and the version number
+print("###############################################################")
+print("## This is ploidyNGS version " + ploidyNGS_utils.git_version())
+print("## Current date and time: " + asctime())
+print("###############################################################")
 # Get information from the argparse (arguments)
 args = parser.parse_args()
 bamOBJ = args.bam
 AllowedMaxAlleleFreq = args.AllowedMaxAlleleFreq
 MaxDepth=args.MaxDepth
 baseOut=args.out + "_depth" + str(MaxDepth)
-fileOut=baseOut + ".tab"
-outOBJ = open(fileOut,"w")
-
+fileHistOut=baseOut + ".tab"
+fileGuessOut=baseOut + ".ks-distance.PloidyNGS.tbl"
+covGuessPloidy=args.covGuessPloidy
+outOBJ = open(fileHistOut,"w")
 # Check if bam index is present; if not, create it
 bamindexname = args.bam + ".bai"
 if os.path.isfile(bamindexname):
@@ -90,13 +107,19 @@ countAlleleNormalized = makehash()
 # Traversing BAM file: Count the number of reads for 
 #  each observed nucleotide at each position in the chromosome/contig
 #  Stores the count in a dictionary of dictionaries (count) for later processing
+
+countTotalPositions=0
+countTotalReads=0
+
 for contig in bamfile.references:
 	for pucolumn in bamfile.pileup(contig, 0):
+		countTotalPositions=countTotalPositions+1
 		pos_1 = pucolumn.pos
 		countReadsPos=0
 		#print("Contig: " + contig + " Chromosome Position:" + str(pos_1))
 		for puread in pucolumn.pileups:
 			if not puread.is_del and not puread.is_refskip and countReadsPos <= MaxDepth-1:
+				countTotalReads=countTotalReads+1
 				countReadsPos=countReadsPos+1
 				base = puread.alignment.query_sequence[puread.query_position]
 				if count[contig][pos_1][base]:
@@ -104,6 +127,9 @@ for contig in bamfile.references:
 				else:
 					count[contig][pos_1][base]=1
 		#print("Total number of reads: " + str(countReadsPos))
+
+averageCoverage=countTotalReads/countTotalPositions
+print("Average coverage: %5.2f" % averageCoverage)
 
 #Traversing dictionary of dictionaries with number of reads for each observed nucleotide
 # at each position, skips monomorphic positions and positions in which the most frequent
@@ -173,6 +199,22 @@ for contig, dict2 in count.iteritems():
 
 outOBJ.close()
 
-cmdRscript="Rscript --vanilla ploidyNGS_generateHistogram.R "+ fileOut + " " + fileOut +".PloidyNGS.pdf" + " " + str(1-AllowedMaxAlleleFreq) + " " + str(AllowedMaxAlleleFreq)
-#print(cmdRscript)
-os.system(cmdRscript)
+cmdPloidyGraphRscript="Rscript --vanilla ploidyNGS_generateHistogram.R "+ fileHistOut + " " + fileHistOut +".PloidyNGS.pdf" + " " + str(1-AllowedMaxAlleleFreq) + " " + str(AllowedMaxAlleleFreq)
+#print(cmdPloidyGraphRscript)
+os.system(cmdPloidyGraphRscript)
+
+if(args.guessPloidy):
+ if(os.path.isdir("./simulation/data")):
+  cmdGuessPloidyRscript="Rscript --vanilla ploidyNGS_guessPloidy.R " + str(covGuessPloidy) + " " + fileHistOut + " " + fileGuessOut
+  #print(cmdGuessPloidyRscript)
+  os.system(cmdGuessPloidyRscript)
+  line=linecache.getline(fileGuessOut, 2)
+  fields=line.replace('"','').split(" ")
+  res="""
+  After comparing your data with our simulated dataset
+  and computing the Kolmogorov-Smirnov distance, 
+  the closest ploidy to yours is %s
+  """
+  print(res % (fields[0]))
+ else:
+  print("The directoy with simulation data is missing. Guessing ploidy level cannot run!")
