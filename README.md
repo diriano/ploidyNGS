@@ -99,8 +99,8 @@ This should print the following in your screen:
 
 ```bash
 ###############################################################
-## This is ploidyNGS version v2.0.3
-## Current date and time: Sun Feb 26 11:57:50 2017
+## This is ploidyNGS version v3.0.0
+## Current date and time: Sun Feb 26 12:26:05 2017
 ###############################################################
 No index available for pileup. Creating an index...
 Getting the number of mapped reads from BAM
@@ -132,10 +132,10 @@ The switch `-h` will give you access to the full help page:
 
 ```bash
 ./ploidyNGS.py -h
-#######################################
-This is ploidyNGS version v2.0.3
-Sun Feb 26 11:46:14 2017
-#######################################
+###############################################################
+## This is ploidyNGS version v3.0.0
+## Current date and time: Sun Feb 26 12:26:05 2017
+###############################################################
 usage: ploidyNGS.py [-h] [-v] -o file -b mappingGenome.bam [-m 0.95 default)]
                     [-d 100 (default] [-g] [-c {15,25,50,100}]
 
@@ -217,7 +217,7 @@ This will print the following in your screen:
 
 ```bash
 ###############################################################
-## This is ploidyNGS version v2.0.3
+## This is ploidyNGS version v3.0.0
 ## Current date and time: Sun Feb 26 12:26:05 2017
 ###############################################################
 BAM index present... OK!
