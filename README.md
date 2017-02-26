@@ -4,7 +4,7 @@
 
 **Results:** We have developed `ploidyNGS`, a model-free, open source tool to visualize and explore ploidy levels in a newly sequenced genome, exploiting short read data. We tested `ploidyNGS` using both simulated and real NGS data of the model yeast *Saccharomyces cerevisiae*. `ploidyNGS` allows the identification of the ploidy level of a newly sequenced genome in a visual way. We have applied `ploidyNGS` to a wide range of different genome ploidy and heterozigosity levels, as well as to a range of sequencing depths.
 
-**Availability and implementation:** `ploidyNGS` is available under the GNU General Public License (GPL) at https://github.com/diriano/ploidyNGS. ploidyNGS is implemented in Python and R.
+**Availability and implementation:** `ploidyNGS` is available under the GNU General Public License (GPL) at https://github.com/diriano/ploidyNGS. `ploidyNGS` is implemented in Python and R.
 
 ## Requirements
 
@@ -98,19 +98,23 @@ And then run:
 This should print the following in your screen:
 
 ```bash
+###############################################################
+## This is ploidyNGS version v2.0.3
+## Current date and time: Sun Feb 26 11:57:50 2017
+###############################################################
 No index available for pileup. Creating an index...
 Getting the number of mapped reads from BAM
 460400
 ```
 
-And generate the files:
+And should generate the files:
 
 * diploidTest_depth100.tab
 * diploidTest_depth100.tab.PloidyNGS.pdf
 
 The PDF file should have a histogram identical to this https://github.com/diriano/ploidyNGS/tree/master/images/diploidTest_depth100.tab.PloidyNGS.png
 
-After running ploidyNGS do not forget to deactivate your python virtual environment:
+After running `ploidyNGS` do not forget to deactivate your python virtual environment:
 
 ```bash
 deactivate
@@ -128,8 +132,12 @@ The switch `-h` will give you access to the full help page:
 
 ```bash
 ./ploidyNGS.py -h
+#######################################
+This is ploidyNGS version v2.0.3
+Sun Feb 26 11:46:14 2017
+#######################################
 usage: ploidyNGS.py [-h] [-v] -o file -b mappingGenome.bam [-m 0.95 default)]
-                    [-d 100 (default]
+                    [-d 100 (default] [-g] [-c {15,25,50,100}]
 
 ploidyNGS: Visual exploration of ploidy levels
 
@@ -146,14 +154,22 @@ optional arguments:
   -d 100 (default), --max_depth 100 (default)
                         Max number of reads kepth at each position in the
                         reference genome (integer, default: 100)
+  -g, --guess_ploidy    Try to guess ploidy level by comparison with simulated
+                        data
+  -c {15,25,50,100}, --coverage_guess_ploidy {15,25,50,100}
+                        If you selected --guess_ploidy, It should be one of
+                        the coverage values for simulated data. It defaults to
+                        100
 ```
 
 There are two required parameters: the input BAM file (`-b` or `--bam`) and a string (`-o` or `--out`) that will be used to generate the output files.
 
-Two additional parameters help you control some of the behavior of `ploidyNGS`:
+Additional parameters help you control some of the behavior of `ploidyNGS`:
 
 * `-m` or `--max_allele_freq`: Float between 0 and 1. Default 0.95. Ignore positions where the frequencey of the most abundant allele is higher or equal than `max_allele_freq`
 * `-d` or `--max_depth`: Integer. Default 100. Maximum sequencing depth to consider, e.g., if d=100, then only the first 100 mapped reads will be examined.
+* `-g` pr `--guess_ploidy`: Boolean. If present, `ploidyNGS` will try to guess the ploidy level of your data by comparing your allele frequency distribution to our simulated data, and computing the Kolmogorov-Smirnov distance, this will generate a table with the suffix: .ks-distance.PloidyNGS.tbl, also `ploidyNGS` will report on the screen the ploidy of the most similar distribution in the simulated data.
+* `-c` or `--coverage_guess_ploidy`: One of 15, 25, 50, 100. If you selected `--guess_ploidy`, then you coudl use this argument. It selected the subset of simulated data to compare against in order to guess ploidy level. We provide 4 subsets of simulated data, the correspond to different sequencing depths/coverages.
 
 ## Examples and test
 -------------------
@@ -175,7 +191,7 @@ First using the HaploidGenome data:
 cd ~/ploidyNGS
 source .venv/bin/activate
 mkdir myTest
-./ploidyNGS.py --out myTest/DataTestPloidy1.tab --bam test_data/HaploidGenome/Ploidy1.bowtie2.sorted.bam 
+./ploidyNGS.py --out myTest/DataTestPloidy1 --bam test_data/HaploidGenome/Ploidy1.bowtie2.sorted.bam 
 deactivate
 ```
 
@@ -187,12 +203,41 @@ Compare your file DataTestPloidy1.tab_depth100.tab.PloidyNGS.pdf it should be pr
 
 What you should see in that histogram is one peak around 95% for the series labelled First, which is the most common allele, this means that the most frequent was represented by 95% or more of the reads in most positions, which is compatible with a haploid genome. The series labelled Second, should have a peak around 5%, this means that in hereromorphic positions, the second most frequent allele have around 5% of the reads, these most likely represent sequencing errors.
 
+In case you want ploidyNGs to try to guess the ploidy level in your sample, you should use the argument --guess_ploidy, see:
+
+```bash
+cd ~/ploidyNGS
+source .venv/bin/activate
+mkdir myTest
+./ploidyNGS.py --guess_ploidy --out myTest/DataTestPloidy1_guessPloidy --bam test_data/HaploidGenome/Ploidy1.bowtie2.sorted.bam
+deactivate
+```
+
+This will print the following in your screen:
+
+```bash
+###############################################################
+## This is ploidyNGS version v2.0.3
+## Current date and time: Sun Feb 26 12:26:05 2017
+###############################################################
+BAM index present... OK!
+Getting the number of mapped reads from BAM
+475920
+Average coverage: 99.00
+
+  After comparing your data with our simulated dataset
+  and computing the Kolmogorov-Smirnov distance, 
+  the closest ploidy to yours is 4
+```
+
+You will also find the file `myTest/DataTestPloidy1_guessPloidy_depth100.ks-distance.PloidyNGS.tbl`, that has a table with the comparison of your allele frequency distribution to all the simulated datasets with 100x coverage (this is the default coverage for comparison, you can change it with the argument --coverage_guess_ploidy).
+
 Now, let's have a look into a diploid dataset:
 
 ```bash
 cd ~/ploidyNGS
 source .venv/bin/activate
-./ploidyNGS.py --out myTest/DataTestPloidy2.tab --bam test_data/simulatedDiploidGenome/Ploidy2.bowtie2.sorted.bam
+./ploidyNGS.py --out myTest/DataTestPloidy2.tab --bam test_data/simulatedDiploidGenome/Ploidy2.bowtie2.sorted.bam --guess_ploidy
 deactivate
 ```
 
