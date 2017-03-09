@@ -5,7 +5,7 @@ In order to test `ploidyNGS` with genomes of different ploidy levels we took Sac
 ## Generation of the simulated diploid organism sequences.
 
 ```
-python3 simulatePloidyData.py --genome GCA_000146045.2_R64_genomic_chromosomeI.fna --heterozygosity 0.01 --ploidy 2
+python simulatePloidyData.py --genome GCA_000146045.2_R64_genomic_chromosomeI.fna --heterozygosity 0.01 --ploidy 2
 ```
 
 This will result in the file `simulatedChroms_Ploidy2_Heter0.01.fasta`.
