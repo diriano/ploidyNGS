@@ -59,7 +59,7 @@ parser.add_argument('-b','--bam', dest='bam', metavar='mappingGenome.bam', type=
 parser.add_argument('-m','--max_allele_freq', dest='AllowedMaxAlleleFreq', metavar='0.95 (default)', type=float, help='Fraction of the maximum allele frequency (float betwen 0 and 1, default: 0.95)', required=False, default=0.95)
 parser.add_argument('-d','--max_depth', dest='MaxDepth', metavar='100 (default)', type=int, help='Max number of reads kepth at each position in the reference genome (integer, default: 100)', required=False, default=100)
 parser.add_argument('-g','--guess_ploidy', dest='guessPloidy', help='Try to guess ploidy level by comparison with simulated data', required=False, action="store_true")
-parser.add_argument('-c','--coverage_guess_ploidy', dest='covGuessPloidy', choices=[15,25,50,100], help='If you selected --guess_ploidy, It should be one of the coverage values for simulated data. It defaults to 100', required=False, type=int, default=100)
+parser.add_argument('-c','--coverage_guess_ploidy', dest='covGuessPloidy', choices=[15,25,50,100], help='This parameter will be automatically set based on the coverage of your BAM file, however you can overrride it.', required=False, type=int)
 
 #Print a greeting with the date and the version number
 print("###############################################################")
@@ -86,13 +86,12 @@ else:
 
 # Get number of reads mapped, using idxstats, instead of samtools view, should be much faster, the ony drawback is that
 #  it only gives the number of maped reads, independant of whether they were paired or not during mapping
-print("Getting the number of mapped reads from BAM")
 libSize=0
 for l in pysam.idxstats(args.bam).split('\n'):
 	if(len(l.split('\t'))==4):
 		libSize= libSize+int(l.split('\t')[2])  
 
-print libSize
+print("Number of mapped reads from BAM: %i" % libSize)
 
 # Create a pysam object for the indexed BAM
 bamfile = pysam.AlignmentFile(bamOBJ, "rb")
@@ -129,7 +128,7 @@ for contig in bamfile.references:
 		#print("Total number of reads: " + str(countReadsPos))
 
 averageCoverage=countTotalReads/countTotalPositions
-print("Average coverage: %5.2f" % averageCoverage)
+print("Observed average coverage: %5.2f" % averageCoverage)
 
 #Traversing dictionary of dictionaries with number of reads for each observed nucleotide
 # at each position, skips monomorphic positions and positions in which the most frequent
@@ -204,8 +203,23 @@ cmdPloidyGraphRscript="Rscript --vanilla ploidyNGS_generateHistogram.R "+ fileHi
 os.system(cmdPloidyGraphRscript)
 
 if(args.guessPloidy):
+ setCoverage=0
+ if(covGuessPloidy):
+  setCoverage=covGuessPloidy
+ else:
+  if(averageCoverage < 20):
+   setCoverage=15
+  elif(averageCoverage >= 20 and averageCoverage < 37.5):
+   setCoverage=25
+  elif(averageCoverage >= 37.5 and averageCoverage < 75):
+   setCoverage=50
+  elif(averageCoverage >= 75):
+   setCoverage=100
+  else:
+   setCoverage=100
+ print("Coverage used for guessing ploidy: %i" % setCoverage) 
  if(os.path.isdir("./simulation/data")):
-  cmdGuessPloidyRscript="Rscript --vanilla ploidyNGS_guessPloidy.R " + str(covGuessPloidy) + " " + fileHistOut + " " + fileGuessOut
+  cmdGuessPloidyRscript="Rscript --vanilla ploidyNGS_guessPloidy.R " + str(setCoverage) + " " + fileHistOut + " " + fileGuessOut
   #print(cmdGuessPloidyRscript)
   os.system(cmdGuessPloidyRscript)
   line=linecache.getline(fileGuessOut, 2)
