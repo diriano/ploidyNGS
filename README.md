@@ -277,7 +277,7 @@ For the interpretation of the resulting plots you can either use our simulation 
 | Heptaploid | 42.86 | 57.14 |
 | Heptaploid | 14.29 | 85.71 |
 
-When using the parameter --guess_ploidy, ``ploidyNGS.py` will try to guess the ploidy in your sample by comparing the pattern in which first and second most frequent alleles appear to the same patterns of simulated data of known ploidy. For this we have generated simulated data at different coverages, i.e., 15, 25, 50 and 100. `ploidyNGS.py` will select the closest coverage to yours, in the following way: 
+When using the parameter --guess_ploidy, ``ploidyNGS.py`` will try to guess the ploidy in your sample by comparing the pattern in which first and second most frequent alleles appear to the same patterns of simulated data of known ploidy. For this we have generated simulated data at different coverages, i.e., 15, 25, 50 and 100. `ploidyNGS.py` will select the closest coverage to yours, in the following way: 
 * If the average coverage in your sample is smaller than 20, your data will be compared against datasets of coverage 15. 
 * If you coverage is >=20 and < 37.5, then it will compared against datasets of coverage 25. 
 * If you coverage is >=37.5 and < 75, then it will compared against datasets of coverage 50. 
