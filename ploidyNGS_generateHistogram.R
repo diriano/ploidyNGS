@@ -32,8 +32,7 @@ xmax=as.numeric(args[4])*100
 suppressMessages(library(ggplot2))
 datain<-read.table(args[1],header=F)
 colnames(datain)<-c('Chrom','Pos','Type','Freq')
-datain$Type = factor(datain$Type,
-                     levels(datain$Type)[c(1,3,4,2)])
+datain$Typt = factor(datain$Type)
 hist_plot<-ggplot(datain,aes(x=Freq, fill=Type)) +
   theme_bw()+
   geom_histogram(binwidth = 0.5, alpha=0.4) +

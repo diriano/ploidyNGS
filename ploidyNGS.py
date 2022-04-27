@@ -23,8 +23,8 @@ __email__       = "diriano@gmail.com"
 import sys
 
 #Making sure you are running a version of python that works with this script.
-if sys.version_info[0] != 2 or sys.version_info[1] < 7 or sys.version_info[2] < 8:
-    print("This script requires Python version 2.7.8 or higher within major version 2")
+if sys.version_info[0] != 3:
+    print("This script requires Python version 3")
     sys.exit(1)
     
     
@@ -34,7 +34,6 @@ from collections import defaultdict
 from Bio.SeqRecord import SeqRecord
 from Bio import SeqIO
 from Bio.Seq import Seq
-from Bio.Alphabet import IUPAC
 import os.path
 import linecache
 from time import  asctime
@@ -42,9 +41,9 @@ import ploidyNGS_utils
 
 ###################################
 # Dependencies:
-# - python >= 2.7.8
-# - pysam  >= 0.9
-# - biopython >= 1.66
+# - python >= 3 or higher
+# - pysam  >= 0.17 or higher
+# - biopython >= 1.79 or higher
 ###################################
 
 ###################################
@@ -133,8 +132,8 @@ print("Observed average coverage: %5.2f" % averageCoverage)
 #Traversing dictionary of dictionaries with number of reads for each observed nucleotide
 # at each position, skips monomorphic positions and positions in which the most frequent
 # nucleotide has a frequency larger than AllowedMaxAlleleFreq.
-for contig, dict2 in count.iteritems():
-	for pos, dict3 in dict2.iteritems():
+for contig, dict2 in count.items():
+	for pos, dict3 in dict2.items():
 		pos_depth = 0
 		pos_bases = {}
 		if count[contig][pos]['A']:
@@ -158,7 +157,7 @@ for contig, dict2 in count.iteritems():
 			#print "Max Allele", max(pos_bases, key=pos_bases.get)
 			maxAlleleFreq = (float(pos_bases[max(pos_bases, key=pos_bases.get)]))/float(pos_depth)
 			if maxAlleleFreq <= AllowedMaxAlleleFreq: #Skips positions in which the most frequent nucleotide has a frequency larger than AllowedMaxAlleleFreq
-				for obsBase, obsCount in pos_bases.iteritems():
+				for obsBase, obsCount in pos_bases.items():
 					percBase = (float(obsCount) / float(pos_depth)) * 100
 					countAlleleNormalized[contig][pos][obsBase]=percBase
 				alleleFreqDist = []
