@@ -122,7 +122,8 @@ for contig in bamfile.references:
 			continue
 
 		countTotalPositions=countTotalPositions+1
-		pos_1 = pucolumn.pos
+		# add 1 to position count because .pos returns 0-indexed position
+		pos_1 = pucolumn.pos + 1
 		countReadsPos=0
 		#print("Contig: " + contig + " Chromosome Position:" + str(pos_1))
 		for puread in pucolumn.pileups:
