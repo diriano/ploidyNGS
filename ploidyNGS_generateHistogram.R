@@ -1,3 +1,4 @@
+#!/usr/bin/env Rscript --vanilla
 #ploidyNGS_generateHistogram.R
 
 # __author__      = "Diego Mauricio Riano-Pachon & Renato Augusto Correa dos Santos"

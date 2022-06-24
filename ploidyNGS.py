@@ -197,7 +197,7 @@ for contig, dict2 in count.items():
 
 outOBJ.close()
 
-cmdPloidyGraphRscript="Rscript --vanilla ploidyNGS_generateHistogram.R "+ fileHistOut + " " + fileHistOut +".PloidyNGS.pdf" + " " + str(1-AllowedMaxAlleleFreq) + " " + str(AllowedMaxAlleleFreq)
+cmdPloidyGraphRscript="ploidyNGS_generateHistogram.R "+ fileHistOut + " " + fileHistOut + ".PloidyNGS.pdf" + " " + str(1-AllowedMaxAlleleFreq) + " " + str(AllowedMaxAlleleFreq)
 #print(cmdPloidyGraphRscript)
 os.system(cmdPloidyGraphRscript)
 
