@@ -38,8 +38,8 @@ hist_plot<-ggplot(datain,aes(x=Freq, fill=Type)) +
   theme_bw()+
   geom_histogram(binwidth = 0.5, alpha=0.4) +
   ggtitle(args[1]) +
-  ylab("Count positions") +
-  xlab("Allele Freq") +
+  ylab("Number of heteromorphic positions") +
+  xlab("Allele Frequency") +
   scale_x_continuous(limits=c(xmin,xmax))+
   scale_fill_manual(values=c("#920000", 
                              "#24FF24", 
