@@ -132,7 +132,17 @@ print("Observed average coverage: %5.2f" % averageCoverage)
 #Traversing dictionary of dictionaries with number of reads for each observed nucleotide
 # at each position, skips monomorphic positions and positions in which the most frequent
 # nucleotide has a frequency larger than AllowedMaxAlleleFreq.
+
+# count total number of heteromorphic positions per contig
+# that is, sites with more than 1 base, and max frequency < MaxAlleFreq
+countHeteroPosPerContig = {}
+
 for contig, dict2 in count.items():
+
+	# set heteromorphic counter to 0
+	countHeteroPosPerContig[contig] = 0
+
+	# traverse dict of dicts
 	for pos, dict3 in dict2.items():
 		pos_depth = 0
 		pos_bases = {}
@@ -157,6 +167,11 @@ for contig, dict2 in count.items():
 			#print "Max Allele", max(pos_bases, key=pos_bases.get)
 			maxAlleleFreq = (float(pos_bases[max(pos_bases, key=pos_bases.get)]))/float(pos_depth)
 			if maxAlleleFreq <= AllowedMaxAlleleFreq: #Skips positions in which the most frequent nucleotide has a frequency larger than AllowedMaxAlleleFreq
+				
+				# add heteromorphic site to counter
+				countHeteroPosPerContig[contig]=countHeteroPosPerContig[contig]+1
+
+				# calculate per-base frequencies and store in list
 				for obsBase, obsCount in pos_bases.items():
 					percBase = (float(obsCount) / float(pos_depth)) * 100
 					countAlleleNormalized[contig][pos][obsBase]=percBase
@@ -196,6 +211,12 @@ for contig, dict2 in count.items():
 				outOBJ.write("\n")
 
 outOBJ.close()
+
+# print total number of heteromorphic sites per contig
+for contig, count in countHeteroPosPerContig.items():
+	print("Number of heteromorphic positions in ", contig, ": ", count)
+# and overall total
+print("Total number of heteromorphic positions: ", sum( countHeteroPosPerContig.values() ))
 
 cmdPloidyGraphRscript="ploidyNGS_generateHistogram.R "+ fileHistOut + " " + fileHistOut + ".PloidyNGS.pdf" + " " + str(1-AllowedMaxAlleleFreq) + " " + str(AllowedMaxAlleleFreq)
 #print(cmdPloidyGraphRscript)
