@@ -57,6 +57,7 @@ parser.add_argument('-o','--out', dest='out', metavar='file', type=str, help='Ba
 parser.add_argument('-b','--bam', dest='bam', metavar='mappingGenome.bam', type=str, help='BAM file used to get allele frequencies', required=True)
 parser.add_argument('-m','--max_allele_freq', dest='AllowedMaxAlleleFreq', metavar='0.95 (default)', type=float, help='Fraction of the maximum allele frequency (float betwen 0 and 1, default: 0.95)', required=False, default=0.95)
 parser.add_argument('-d','--max_depth', dest='MaxDepth', metavar='100 (default)', type=int, help='Max number of reads kepth at each position in the reference genome (integer, default: 100)', required=False, default=100)
+parser.add_argument('-u','--min_cov', dest='MinCov', metavar='0 (default)', type=int, help='Minimum coverage required to use a position (integer, default: 0)', required=False, default=0)
 parser.add_argument('-g','--guess_ploidy', dest='guessPloidy', help='Try to guess ploidy level by comparison with simulated data', required=False, action="store_true")
 parser.add_argument('-c','--coverage_guess_ploidy', dest='covGuessPloidy', choices=[15,25,50,100], help='This parameter will be automatically set based on the coverage of your BAM file, however you can overrride it.', required=False, type=int)
 
@@ -70,7 +71,8 @@ args = parser.parse_args()
 bamOBJ = args.bam
 AllowedMaxAlleleFreq = args.AllowedMaxAlleleFreq
 MaxDepth=args.MaxDepth
-baseOut=args.out + "_depth" + str(MaxDepth)
+MinCov=args.MinCov
+baseOut=args.out + "_MaxDepth" + str(MaxDepth) + "_MinCov" + str(MinCov)
 fileHistOut=baseOut + ".tab"
 fileGuessOut=baseOut + ".ks-distance.PloidyNGS.tbl"
 covGuessPloidy=args.covGuessPloidy
@@ -111,6 +113,14 @@ countTotalReads=0
 
 for contig in bamfile.references:
 	for pucolumn in bamfile.pileup(contig, 0):
+
+		# skip if low coverage position
+		## .get_num_aligned() returns number of reads aligned to
+		## this position after a min base quality filter is applied
+		## alternatively use .nsegments to ignore min base quality filter
+		if pucolumn.get_num_aligned() <= MinCov:
+			continue
+
 		countTotalPositions=countTotalPositions+1
 		pos_1 = pucolumn.pos
 		countReadsPos=0
