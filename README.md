@@ -167,6 +167,8 @@ optional arguments:
                         This parameter will be automatically set based on the
                         coverage of your BAM file, however you can overrride
                         it.
+  -u,--min_cov          Minimum coverage required to use a position
+                        (integer, default: 0)
 ```
 
 There are two required parameters: the input BAM file (`-b` or `--bam`) and a string (`-o` or `--out`) that will be used to generate the output files.
