@@ -31,9 +31,6 @@ if sys.version_info[0] != 3:
 import argparse
 import pysam
 from collections import defaultdict
-from Bio.SeqRecord import SeqRecord
-from Bio import SeqIO
-from Bio.Seq import Seq
 import os.path
 import linecache
 from time import  asctime
