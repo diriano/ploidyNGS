@@ -9,8 +9,8 @@
 ## Requirements
 
 - python >=3
-- pysam  >=0.9
-- biopython >=1.66
+- pysam  >=0.19.1
+- biopython >=1.3.9
 - R and ggplot2
 
 ## Installation
@@ -23,7 +23,7 @@ git clone https://github.com/diriano/ploidyNGS.git
 ```
 ### Python virtual environment and python dependencies
 
-Make sure pip is installed. If not, then please check your distribution's documentation and install it. In Ubuntu 16.04 LTS you can do:
+Make sure pip is installed. If not, then please check your distribution's documentation and install it. In Ubuntu 20.04.4 LTS you can do:
 
 ```bash
 sudo apt install python-pip
@@ -53,23 +53,10 @@ source .venv/bin/activate
 
 Install dependencies:
 
-pysam requires the zlib headers. Please make sure you have these installed. In Ubuntu 16.04 LTS you can do:
+`requirements.txt`
 
 ```bash
-sudo apt install zlib1g-dev
-```
-
-Then install pysam:
-
-```bash
-pip install pysam
-```
-
-Install biopython dependencies, and then biopython itself (for details see: http://biopython.org/DIST/docs/install/Installation.html):
-
-```bash
-pip install numpy
-pip install biopython
+pip install -r requirements.txt
 ```
 
 At this point you can deactive the python virtual environment:
@@ -161,6 +148,8 @@ optional arguments:
   -d 100 (default), --max_depth 100 (default)
                         Max number of reads kepth at each position in the
                         reference genome (integer, default: 100)
+  -u 0 (default), --min_cov 0 (default)
+                        Minimum coverage required to use a position (integer, default: 0)
   -g, --guess_ploidy    Try to guess ploidy level by comparison with simulated
                         data
   -c {15,25,50,100}, --coverage_guess_ploidy {15,25,50,100}
@@ -226,8 +215,8 @@ This will print the following in your screen:
 
 ```bash
 ###############################################################
-## This is ploidyNGS version v3.1.0
-## Current date and time: Thu Mar  9 13:09:55 2017
+## This is ploidyNGS version v3.1.2
+## Current date and time: Tue Jun 28 14:52:25 2022
 ###############################################################
 BAM index present... OK!
 Number of mapped reads from BAM: 206062
