@@ -215,7 +215,7 @@ This will print the following in your screen:
 
 ```bash
 ###############################################################
-## This is ploidyNGS version v3.1.2
+## This is ploidyNGS version v3.1.3
 ## Current date and time: Tue Jun 28 14:52:25 2022
 ###############################################################
 BAM index present... OK!
